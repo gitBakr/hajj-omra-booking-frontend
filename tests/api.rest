@@ -1,0 +1,145 @@
+### Variables globales
+@baseUrl = https://hajj-omra-booking-backend.onrender.com
+@adminEmail = raouanedev@gmail.com
+
+### 1. Créer un nouveau pèlerin
+POST {{baseUrl}}/pelerin
+Content-Type: application/json
+
+{
+  "civilite": "M.",
+  "nom": "Test",
+  "prenom": "User",
+  "nationalite": "France",
+  "telephone": "0123456789",
+  "email": "test@example.com",
+  "adresse": {
+    "numero": "123",
+    "rue": "Rue Test",
+    "ville": "Paris",
+    "codePostal": "75001"
+  },
+  "typePelerinage": "hajj",
+  "dateDepart": "Du 01 Mai au 20 Juin 2025",
+  "besoinsSpeciaux": "",
+  "chambre": {
+    "type": "quadruple",
+    "supplement": 0
+  }
+}
+
+### 2. Rechercher les pèlerins par email
+GET {{baseUrl}}/pelerin/search?email=test@example.com
+
+### 3. Obtenir les statistiques (Admin)
+POST {{baseUrl}}/pelerin/stats
+Content-Type: application/json
+
+{
+  "email": "{{adminEmail}}"
+}
+
+### 4. Liste complète des pèlerins (Admin)
+POST {{baseUrl}}/pelerin/list
+Content-Type: application/json
+
+{
+    "email": "{{adminEmail}}"
+}
+
+### 5. Nettoyer la base de données (Admin)
+DELETE {{baseUrl}}/pelerin/clean
+Content-Type: application/json
+
+{
+  "email": "{{adminEmail}}"
+}
+
+### 6. Test avec un pèlerin Omra
+POST {{baseUrl}}/pelerin
+Content-Type: application/json
+
+{
+  "civilite": "Mme",
+  "nom": "Test",
+  "prenom": "Omra",
+  "nationalite": "Maroc",
+  "telephone": "0666778899",
+  "email": "test.omra@example.com",
+  "adresse": {
+    "numero": "45",
+    "rue": "Avenue Test",
+    "ville": "Lyon",
+    "codePostal": "69001"
+  },
+  "typePelerinage": "omra",
+  "dateDepart": "Du 15 Mars au 05 Avril 2025",
+  "besoinsSpeciaux": "Régime sans gluten",
+  "chambre": {
+    "type": "double",
+    "supplement": 500
+  }
+}
+
+### 7. Rechercher plusieurs réservations
+GET {{baseUrl}}/pelerin/search?email=test.omra@example.com
+
+### 8. Test avec chambre triple
+POST {{baseUrl}}/pelerin
+Content-Type: application/json
+
+{
+  "civilite": "M.",
+  "nom": "Test",
+  "prenom": "Triple",
+  "nationalite": "Algérie",
+  "telephone": "0777889900",
+  "email": "test.triple@example.com",
+  "adresse": {
+    "numero": "78",
+    "rue": "Boulevard Test",
+    "ville": "Marseille",
+    "codePostal": "13001"
+  },
+  "typePelerinage": "hajj",
+  "dateDepart": "Du 01 Mai au 20 Juin 2025",
+  "besoinsSpeciaux": "Assistance médicale",
+  "chambre": {
+    "type": "triple",
+    "supplement": 250
+  }
+}
+
+### 9. Test avec besoins spéciaux
+POST {{baseUrl}}/pelerin
+Content-Type: application/json
+
+{
+  "civilite": "Mme",
+  "nom": "Test",
+  "prenom": "Special",
+  "nationalite": "Tunisie",
+  "telephone": "0611223344",
+  "email": "test.special@example.com",
+  "adresse": {
+    "numero": "12",
+    "rue": "Rue Spéciale",
+    "ville": "Nice",
+    "codePostal": "06000"
+  },
+  "typePelerinage": "hajj",
+  "dateDepart": "Du 01 Mai au 20 Juin 2025",
+  "besoinsSpeciaux": "Fauteuil roulant, régime diabétique",
+  "chambre": {
+    "type": "double",
+    "supplement": 500
+  }
+}
+
+### 10. Vérifier les statistiques après insertions
+POST {{baseUrl}}/pelerin/stats
+Content-Type: application/json
+
+{
+  "email": "{{adminEmail}}"
+} 

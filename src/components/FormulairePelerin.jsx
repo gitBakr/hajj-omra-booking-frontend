@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import './FormulairePelerin.css';
 import MesReservations from './MesReservations';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001';
+const API_URL = "https://hajj-omra-booking-backend.onrender.com/pelerin";
 const isDev = process.env.NODE_ENV === 'development';
 
 const FormulairePelerin = ({ 
@@ -186,6 +186,28 @@ const FormulairePelerin = ({
     }
   };
 
+  const envoyerDonnees = async (donnees) => {
+    try {
+      const response = await fetch(API_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(donnees)
+      });
+
+      if (!response.ok) {
+        throw new Error(`Erreur HTTP: ${response.status}`);
+      }
+
+      const resultat = await response.json();
+      return resultat;
+    } catch (erreur) {
+      console.error("❌ Erreur lors de l'envoi:", erreur);
+      throw erreur;
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -200,24 +222,17 @@ const FormulairePelerin = ({
             console.log('📍 API_URL:', API_URL);
             console.log('📝 Données à envoyer:', form.data);
             
-          const response = await fetch(`${API_URL}/api/pelerins`, {
-            method: 'POST',
-            headers: { 
-              'Content-Type': 'application/json',
-              'Accept': 'application/json'
-            },
-            body: JSON.stringify(form.data)
-          });
-          
+            const response = await envoyerDonnees(form.data);
+            
             console.log('📡 Réponse du serveur:', response);
-          
-          if (!response.ok) {
+            
+            if (!response.ok) {
               throw new Error(`Erreur HTTP: ${response.status}`);
-          }
-          
+            }
+            
             const result = await response.json();
-          console.log('✅ Données enregistrées:', result);
-          return result;
+            console.log('✅ Données envoyées avec succès:', result);
+            return result;
           } catch (error) {
             console.error('❌ Erreur détaillée:', error);
             throw error;
@@ -236,7 +251,7 @@ const FormulairePelerin = ({
 
       // Vérification des données
       const emailTest = formulaires[0].data.email;
-      const verificationResponse = await fetch(`${API_URL}/api/pelerins/search?email=${emailTest}`, {
+      const verificationResponse = await fetch(`${API_URL}/search?email=${emailTest}`, {
         headers: {
           'Accept': 'application/json'
         }
@@ -339,7 +354,7 @@ const FormulairePelerin = ({
     setSearching(true);
     try {
       console.log('🔍 Recherche pour email:', searchEmail);
-      const response = await fetch(`${API_URL}/api/pelerins/search?email=${searchEmail}`, {
+      const response = await fetch(`${API_URL}/search?email=${searchEmail}`, {
         headers: {
           'Accept': 'application/json'
         }
@@ -398,6 +413,28 @@ const FormulairePelerin = ({
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  // Pour le nettoyage de la base de données (en mode dev)
+  const cleanDatabase = async () => {
+    if (window.confirm('⚠️ Êtes-vous sûr de vouloir supprimer toutes les données ?')) {
+      try {
+        const response = await fetch(`${API_URL}/pelerin/clean`, {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            email: 'raouanedev@gmail.com'  // Email admin
+          })
+        });
+        const data = await response.json();
+        alert('✅ ' + data.message);
+      } catch (error) {
+        console.error('Erreur:', error);
+        alert('❌ Erreur lors du nettoyage');
+      }
+    }
   };
 
   if (showReservations) {
