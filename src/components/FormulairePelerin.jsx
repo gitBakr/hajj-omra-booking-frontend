@@ -196,12 +196,16 @@ const FormulairePelerin = ({
         body: JSON.stringify(donnees)
       });
 
+      const resultat = await response.json();
+
+      // Vérifier si la réponse contient une erreur
       if (!response.ok) {
-        throw new Error(`Erreur HTTP: ${response.status}`);
+        throw new Error(resultat.message || `Erreur HTTP: ${response.status}`);
       }
 
-      const resultat = await response.json();
+      console.log('✅ Données envoyées avec succès:', resultat);
       return resultat;
+
     } catch (erreur) {
       console.error("❌ Erreur lors de l'envoi:", erreur);
       throw erreur;
@@ -211,7 +215,7 @@ const FormulairePelerin = ({
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    console.log('📝 Données à envoyer:', formulaires);
+    setMessage({ type: '', text: '' }); // Réinitialiser le message
 
     try {
       // Soumettre tous les formulaires
@@ -219,20 +223,8 @@ const FormulairePelerin = ({
         formulaires.map(async (form) => {
           console.log(`Envoi des données pour ${form.data.prenom} ${form.data.nom}...`);
           try {
-            console.log('📍 API_URL:', API_URL);
-            console.log('📝 Données à envoyer:', form.data);
-            
-            const response = await envoyerDonnees(form.data);
-            
-            console.log('📡 Réponse du serveur:', response);
-            
-            if (!response.ok) {
-              throw new Error(`Erreur HTTP: ${response.status}`);
-            }
-            
-            const result = await response.json();
-            console.log('✅ Données envoyées avec succès:', result);
-            return result;
+            const resultat = await envoyerDonnees(form.data);
+            return resultat;
           } catch (error) {
             console.error('❌ Erreur détaillée:', error);
             throw error;
@@ -249,26 +241,7 @@ const FormulairePelerin = ({
                Cliquez sur "Voir mes réservations" pour vérifier.`
       });
 
-      // Vérification des données
-      const emailTest = formulaires[0].data.email;
-      const verificationResponse = await fetch(`${API_URL}/search?email=${emailTest}`, {
-        headers: {
-          'Accept': 'application/json'
-        }
-      });
-      const verificationData = await verificationResponse.json();
-      console.log('🔍 Vérification des données enregistrées:', verificationData);
-
-      if (verificationData.length > 0) {
-        setMessage({
-          type: 'success',
-          text: `✅ Inscription réussie !
-                 ${formulaires.length} personne(s) inscrite(s).
-                 Un email de confirmation a été envoyé à : ${formulaires[0].data.email}
-                 Vous pouvez consulter vos réservations à tout moment.`
-        });
-
-        // Réinitialiser le formulaire
+      // Réinitialiser le formulaire après succès
       setFormulaires([{
         id: 1,
         data: {
@@ -284,29 +257,26 @@ const FormulairePelerin = ({
             ville: '',
             codePostal: ''
           },
-            typePelerinage: packType,
-            dateDepart: packType === 'hajj' ? 
-              'Du 01 Mai au 20 Juin 2025' : 
-              'Du 15 Mars au 05 Avril 2025',
-            besoinsSpeciaux: '',
-            chambre: {
-              type: 'quadruple',
-              supplement: 0
-            }
+          typePelerinage: packType,
+          dateDepart: packType === 'hajj' ? 
+            'Du 01 Mai au 20 Juin 2025' : 
+            'Du 15 Mars au 05 Avril 2025',
+          besoinsSpeciaux: '',
+          chambre: {
+            type: 'quadruple',
+            supplement: 0
+          }
         }
       }]);
 
-        // Scroll en haut pour voir le message
+      // Scroll en haut pour voir le message de succès
       window.scrollTo({ top: 0, behavior: 'smooth' });
-      } else {
-        throw new Error('La vérification des données a échoué');
-      }
 
     } catch (error) {
       console.error('❌ Erreur lors de l\'envoi:', error);
       setMessage({
         type: 'error',
-        text: `❌ ${error.message}`
+        text: `❌ Erreur: ${error.message}`
       });
     } finally {
       setLoading(false);
