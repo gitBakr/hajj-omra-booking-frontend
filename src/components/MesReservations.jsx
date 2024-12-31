@@ -126,44 +126,18 @@ const MesReservations = ({ onRetour, email }) => {
               {reservations.map((reservation, index) => (
                 <div key={index} className="reservation-card">
                   <div className="reservation-header">
-                    <h4>{reservation.typePelerinage === 'hajj' ? 'Hajj 2025' : 'Omra Ramadhan'}</h4>
-                    <span className="person-number">Personne {index + 1}</span>
+                    <h3>{reservation.civilite} {reservation.nom} {reservation.prenom}</h3>
+                    <span className="reservation-type">{reservation.typePelerinage}</span>
                   </div>
+                  
                   <div className="reservation-details">
-                    <p><strong>Date de départ:</strong> {reservation.dateDepart}</p>
-                    <p>
-                      <strong>Identité:</strong> {reservation.civilite} {reservation.prenom} {reservation.nom}
-                    </p>
-                    <p><strong>Email:</strong> {reservation.email}</p>
-                    <p><strong>Téléphone:</strong> {reservation.telephone}</p>
-                    <p><strong>Nationalité:</strong> {reservation.nationalite}</p>
-                    <p>
-                      <strong>Adresse:</strong> {reservation.adresse.numero} {reservation.adresse.rue}, 
-                      {reservation.adresse.codePostal} {reservation.adresse.ville}
-                    </p>
+                    <p><strong>Nationalité :</strong> {reservation.nationalite}</p>
+                    <p><strong>Email :</strong> {reservation.email}</p>
+                    <p><strong>Téléphone :</strong> {reservation.telephone}</p>
+                    <p><strong>Date de départ :</strong> {reservation.dateDepart}</p>
+                    <p><strong>Type de chambre :</strong> {reservation.chambre.type}</p>
                     {reservation.besoinsSpeciaux && (
-                      <p><strong>Besoins spéciaux:</strong> {reservation.besoinsSpeciaux}</p>
-                    )}
-                    <p>
-                      <strong>Date d'inscription:</strong> {
-                        new Date(reservation.dateInscription).toLocaleDateString('fr-FR', {
-                          day: 'numeric',
-                          month: 'long',
-                          year: 'numeric',
-                          hour: '2-digit',
-                          minute: '2-digit'
-                        })
-                      }
-                    </p>
-                    {reservation.chambre && (
-                      <p>
-                        <strong>Type de chambre:</strong> {formatChambreType(reservation.chambre)}
-                        {reservation.chambre.supplement > 0 && (
-                          <span className="supplement-info">
-                            (Supplément: {reservation.chambre.supplement}€)
-                          </span>
-                        )}
-                      </p>
+                      <p><strong>Besoins spéciaux :</strong> {reservation.besoinsSpeciaux}</p>
                     )}
                   </div>
                 </div>
