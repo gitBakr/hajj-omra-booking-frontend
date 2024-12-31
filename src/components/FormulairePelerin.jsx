@@ -9,7 +9,7 @@ const isDev = process.env.NODE_ENV === 'development';
 
 // Ajouter ces constantes pour EmailJS
 const EMAILJS_SERVICE_ID = "service_izw1pma";
-const EMAILJS_TEMPLATE_ID = "template_hjonhtm";
+const EMAILJS_TEMPLATE_ID = "template_bqkl86r";
 const EMAILJS_PUBLIC_KEY = "ktYqhkd2pNkTEmsbp";
 
 const FormulairePelerin = ({ 
