@@ -319,34 +319,20 @@ const FormulairePelerin = ({
     setMessage({ type: '', text: '' });
   };
 
+  // Constante pour l'email admin
+  const ADMIN_EMAIL = 'raouanedev@gmail.com';
+
+  // Dans le composant FormulairePelerin, modifier la fonction searchReservations
   const searchReservations = async (e) => {
     e.preventDefault();
     setSearching(true);
     try {
       console.log('🔍 Recherche pour email:', searchEmail);
-      const response = await fetch(`${API_URL}/search?email=${searchEmail}`, {
-        headers: {
-          'Accept': 'application/json'
-        }
-      });
-
-      if (!response.ok) {
-        throw new Error('Erreur lors de la recherche');
-      }
-
-      const data = await response.json();
-      console.log('✅ Réservations trouvées:', data);
       
-      if (data && data.length > 0) {
-        setReservations(data);
-        setShowModal(true);
-      } else {
-        setReservations([]);
-        setMessage({
-          type: 'error',
-          text: 'Aucune réservation trouvée pour cet email.'
-        });
-      }
+      // Pour tous les utilisateurs (admin ou non), on redirige vers MesReservations
+        setShowReservations(true);
+        return;
+
     } catch (error) {
       console.error('❌ Erreur:', error);
       setMessage({
@@ -408,7 +394,10 @@ const FormulairePelerin = ({
   };
 
   if (showReservations) {
-    return <MesReservations onRetour={() => setShowReservations(false)} />;
+    return <MesReservations 
+      onRetour={() => setShowReservations(false)} 
+      email={searchEmail}
+    />;
   }
 
   return (
