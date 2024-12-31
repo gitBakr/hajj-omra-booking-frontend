@@ -72,6 +72,7 @@ const FormulairePelerin = ({
   const [personnes, setPersonnes] = useState([]);
   const [showPersonneForm, setShowPersonneForm] = useState(false);
   const [showScrollTop, setShowScrollTop] = useState(false);
+  const [searchEmail, setSearchEmail] = useState('');
 
   // Données pour la génération aléatoire
   const donneesFictives = {
@@ -422,8 +423,13 @@ const FormulairePelerin = ({
           type="button" 
           className="view-reservations-btn"
           onClick={() => {
-            setShowReservations(true);
-            setMessage({ type: '', text: '' });
+            // Ouvrir une boîte de dialogue pour demander l'email
+            const email = prompt('Entrez votre email pour voir vos réservations :');
+            if (email) {
+              setSearchEmail(email);
+              setShowReservations(true);
+              setMessage({ type: '', text: '' });
+            }
           }}
         >
           🔍 Voir mes réservations
