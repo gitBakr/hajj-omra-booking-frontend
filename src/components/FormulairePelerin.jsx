@@ -61,10 +61,8 @@ const FormulairePelerin = ({
           ville: '',
           codePostal: ''
         },
-        typePelerinage: packType,
-        dateDepart: packType === 'hajj' ? 
-          'Du 01 Mai au 20 Juin 2025' : 
-          'Du 15 Mars au 05 Avril 2025',
+        typePelerinage: 'hajj',
+        dateDepart: 'Du 01 Mai au 20 Juin 2025',
         besoinsSpeciaux: '',
         chambre: {
           type: 'quadruple',
@@ -548,29 +546,24 @@ const FormulairePelerin = ({
               </button>
             )}
 
-            {/* Type de Pèlerinage (visible pour tous les formulaires) */}
+            {/* Type de Voyage */}
             <div className="form-section">
-              <h3>Type de Pèlerinage</h3>
-              <div className="type-pelerinage-selector">
-                <div 
-                  className={`type-option ${formulaire.data.typePelerinage === 'hajj' ? 'selected' : ''}`}
-                  onClick={() => handleChange(formulaire.id, 'typePelerinage', 'hajj')}
-                >
-                  <h4>Hajj 2025</h4>
-                  <p>Grand pèlerinage</p>
-                  <p className="details">Du 01 Mai au 20 Juin 2025</p>
-                  <p className="price">À partir de 6990€/personne</p>
-                </div>
-                <div 
-                  className={`type-option ${formulaire.data.typePelerinage === 'omra' ? 'selected' : ''}`}
-                  onClick={() => handleChange(formulaire.id, 'typePelerinage', 'omra')}
-                >
-                  <h4>Omra Ramadhan</h4>
-                  <p>Petit pèlerinage</p>
-                  <p className="details">Du 15 Mars au 05 Avril 2025</p>
-                  <p className="price">À partir de 2900€/personne</p>
-                </div>
+              <div className="section-title">
+                <h3>Choix du voyage</h3>
+                <p className="section-subtitle">Sélectionnez votre type de pèlerinage</p>
               </div>
+              <select
+                value={formulaire.data.typePelerinage}
+                onChange={(e) => handleChange(formulaire.id, 'typePelerinage', e.target.value)}
+                className="voyage-select"
+              >
+                <option value="hajj">
+                  🕋 HAJJ 2025
+                </option>
+                <option value="omra">
+                  🌙 OMRA RAMADAN
+                </option>
+              </select>
             </div>
 
             {/* Informations Personnelles */}
