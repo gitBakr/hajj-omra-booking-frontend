@@ -2,9 +2,16 @@ import React, { useState, useRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import './FormulairePelerin.css';
 import MesReservations from './MesReservations';
+import emailjs from '@emailjs/browser';
 
 const API_URL = "https://hajj-omra-booking-backend.onrender.com/pelerin";
 const isDev = process.env.NODE_ENV === 'development';
+
+// Ajouter ces constantes pour EmailJS
+const EMAILJS_SERVICE_ID = "service_izw1pma";
+const EMAILJS_TEMPLATE_ID = "template_hjonhtm";
+const EMAILJS_PUBLIC_KEY = "ktYqhkd2pNkTEmsbp";
+const EMAILJS_PRIVATE_KEY = "P7yGooEdf2UWxDULKGNhN";
 
 const FormulairePelerin = ({ 
   onRetour = () => window.location.href = '/',
@@ -210,33 +217,60 @@ const FormulairePelerin = ({
     }
   };
 
+  // Modifier la fonction d'envoi d'email
+  const envoyerEmailConfirmation = async (email, details) => {
+    try {
+      // Initialiser avec la Private Key pour plus de sécurité
+      emailjs.init(EMAILJS_PRIVATE_KEY);
+      
+      const response = await emailjs.send(
+        EMAILJS_SERVICE_ID,
+        EMAILJS_TEMPLATE_ID,
+        {
+          to_email: email,
+          to_name: details.prenom,
+          type_pelerinage: details.typePelerinage,
+          date_depart: details.dateDepart,
+          nombre_personnes: details.nombrePersonnes
+        }
+      );
+
+      console.log('✉️ Email envoyé avec succès:', response);
+      return response;
+    } catch (error) {
+      console.error('❌ Erreur lors de l\'envoi de l\'email:', error);
+      throw error;
+    }
+  };
+
+  // Modifier handleSubmit pour inclure l'envoi d'email
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setMessage({ type: '', text: '' }); // Réinitialiser le message
+    setMessage({ type: '', text: '' });
 
     try {
-      // Soumettre tous les formulaires
+      // Envoyer les données au serveur
       const resultats = await Promise.all(
         formulaires.map(async (form) => {
-          console.log(`Envoi des données pour ${form.data.prenom} ${form.data.nom}...`);
-          try {
-            const resultat = await envoyerDonnees(form.data);
-            return resultat;
-          } catch (error) {
-            console.error('❌ Erreur détaillée:', error);
-            throw error;
-          }
+          const resultat = await envoyerDonnees(form.data);
+          return resultat;
         })
       );
 
-      console.log('✅ Tous les formulaires ont été envoyés:', resultats);
-      
+      // Envoyer l'email de confirmation
+      await envoyerEmailConfirmation(formulaires[0].data.email, {
+        prenom: formulaires[0].data.prenom,
+        typePelerinage: formulaires[0].data.typePelerinage,
+        dateDepart: formulaires[0].data.dateDepart,
+        nombrePersonnes: formulaires.length
+      });
+
       setMessage({
         type: 'success',
         text: `✅ ${formulaires.length} inscription(s) enregistrée(s) avec succès !
-               Email utilisé : ${formulaires[0].data.email}
-               Cliquez sur "Voir mes réservations" pour vérifier.`
+               Un email de confirmation a été envoyé à : ${formulaires[0].data.email}
+               Vous pouvez consulter vos réservations à tout moment.`
       });
 
       // Réinitialiser le formulaire après succès
@@ -271,7 +305,7 @@ const FormulairePelerin = ({
       window.scrollTo({ top: 0, behavior: 'smooth' });
 
     } catch (error) {
-      console.error('❌ Erreur lors de l\'envoi:', error);
+      console.error('❌ Erreur:', error);
       setMessage({
         type: 'error',
         text: `❌ Erreur: ${error.message}`
@@ -391,6 +425,10 @@ const FormulairePelerin = ({
     }
   };
 
+  useEffect(() => {
+    emailjs.init(EMAILJS_PUBLIC_KEY);
+  }, []);
+
   if (showReservations) {
     return <MesReservations 
       onRetour={() => {
@@ -455,6 +493,25 @@ const FormulairePelerin = ({
             className="test-button clean-test"
           >
             Nettoyer DB
+          </button>
+          <button 
+            type="button" 
+            onClick={async () => {
+              try {
+                await envoyerEmailConfirmation('votre-email@test.com', {
+                  prenom: 'Test',
+                  typePelerinage: 'Hajj',
+                  dateDepart: 'Du 01 Mai au 20 Juin 2025',
+                  nombrePersonnes: 1
+                });
+                alert('✅ Email envoyé avec succès !');
+              } catch (error) {
+                alert('❌ Erreur : ' + error.message);
+              }
+            }} 
+            className="test-button"
+          >
+            Tester Email
           </button>
         </div>
       )}
