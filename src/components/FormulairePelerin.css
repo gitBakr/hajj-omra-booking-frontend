@@ -759,17 +759,14 @@ body {
     justify-content: center;
     align-items: center;
     z-index: 1000;
-    backdrop-filter: blur(5px);
   }
   
   .modal-content {
     background: #222;
     padding: 30px;
     border-radius: 15px;
-    max-width: 90%;
-    width: 600px;
-    max-height: 90vh;
-    overflow-y: auto;
+    width: 90%;
+    max-width: 500px;
     position: relative;
     border: 2px solid #DAA520;
     color: #fff;
@@ -784,13 +781,28 @@ body {
     color: #DAA520;
     font-size: 24px;
     cursor: pointer;
-    padding: 5px;
-    transition: all 0.3s ease;
   }
   
-  .modal-close:hover {
-    color: #FFD700;
-    transform: scale(1.1);
+  .modal-input {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #DAA520;
+    border-radius: 8px;
+    background: #333;
+    color: #fff;
+    margin-top: 8px;
+  }
+  
+  .modal-submit-btn {
+    background: linear-gradient(135deg, #DAA520, #FFD700);
+    color: #000;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    margin-top: 20px;
+    width: 100%;
   }
   
   .admin-panel {

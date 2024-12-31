@@ -73,6 +73,7 @@ const FormulairePelerin = ({
   const [showPersonneForm, setShowPersonneForm] = useState(false);
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [searchEmail, setSearchEmail] = useState('');
+  const [showEmailModal, setShowEmailModal] = useState(false);
 
   // Données pour la génération aléatoire
   const donneesFictives = {
@@ -422,15 +423,7 @@ const FormulairePelerin = ({
         <button 
           type="button" 
           className="view-reservations-btn"
-          onClick={() => {
-            // Ouvrir une boîte de dialogue pour demander l'email
-            const email = prompt('Entrez votre email pour voir vos réservations :');
-            if (email) {
-              setSearchEmail(email);
-              setShowReservations(true);
-              setMessage({ type: '', text: '' });
-            }
-          }}
+          onClick={() => setShowEmailModal(true)}
         >
           🔍 Voir mes réservations
         </button>
@@ -741,6 +734,43 @@ const FormulairePelerin = ({
         >
           ↑
         </button>
+      )}
+
+      {showEmailModal && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <h3>Voir mes réservations</h3>
+            <button 
+              className="modal-close" 
+              onClick={() => setShowEmailModal(false)}
+            >
+              ×
+            </button>
+            <form onSubmit={(e) => {
+              e.preventDefault();
+              setShowEmailModal(false);
+              setShowReservations(true);
+            }}>
+              <div className="form-group">
+                <label>Email utilisé lors de l'inscription</label>
+                <input
+                  type="email"
+                  value={searchEmail}
+                  onChange={(e) => setSearchEmail(e.target.value)}
+                  required
+                  placeholder="Entrez votre email"
+                  className="modal-input"
+                />
+              </div>
+              <button 
+                type="submit" 
+                className="modal-submit-btn"
+              >
+                Rechercher
+              </button>
+            </form>
+          </div>
+        </div>
       )}
     </div>
   );
