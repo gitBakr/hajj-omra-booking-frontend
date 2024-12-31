@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './MesReservations.css';
 
 const API_URL = 'https://hajj-omra-booking-backend.onrender.com/pelerin';
@@ -9,88 +9,61 @@ const formatChambreType = (chambre) => {
   return chambre.type.charAt(0).toUpperCase() + chambre.type.slice(1);
 };
 
-const MesReservations = ({ onRetour }) => {
-  const [searchEmail, setSearchEmail] = useState('');
+const MesReservations = ({ onRetour, email }) => {
   const [reservations, setReservations] = useState(null);
-  const [searching, setSearching] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [error, setError] = useState(null);
 
-  const searchReservations = async (e) => {
-    e.preventDefault();
-    setSearching(true);
-    try {
-      const response = await fetch(`${API_URL}/search?email=${searchEmail}`, {
-        headers: {
-          'Accept': 'application/json'
-        }
-      });
-
-      if (!response.ok) {
-        throw new Error(`Erreur HTTP: ${response.status}`);
-      }
-
-      const data = await response.json();
-      setReservations(data);
-
-      // Si c'est l'admin, on récupère aussi les stats
-      if (searchEmail === ADMIN_EMAIL) {
-        const statsResponse = await fetch(`${API_URL}/stats`, {
-          method: 'POST',
+  // Charger les réservations dès que le composant est monté
+  useEffect(() => {
+    const fetchReservations = async () => {
+      try {
+        const response = await fetch(`${API_URL}/search?email=${email}`, {
           headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ email: searchEmail })
+            'Accept': 'application/json'
+          }
         });
 
-        if (statsResponse.ok) {
-          const statsData = await statsResponse.json();
-          setIsAdmin(true);
+        if (!response.ok) {
+          throw new Error(`Erreur HTTP: ${response.status}`);
         }
+
+        const data = await response.json();
+        setReservations(data);
+
+        // Vérifier si c'est l'admin
+        if (email === ADMIN_EMAIL) {
+          setIsAdmin(true);
+          // Charger les stats pour l'admin...
+        }
+      } catch (error) {
+        setError(error.message);
       }
-    } catch (error) {
-      console.error('Erreur:', error);
-      setReservations([]);
-    } finally {
-      setSearching(false);
+    };
+
+    if (email) {
+      fetchReservations();
     }
-  };
+  }, [email]);
 
   return (
     <div className="reservations-container">
       <div className="reservations-header">
         <h2>
-          {searchEmail === ADMIN_EMAIL && reservations ? 
-            'Panel Administrateur - Toutes les Réservations' : 
-            'Mes Réservations'
-          }
+          {isAdmin ? 'Panel Administrateur - Toutes les Réservations' : 'Mes Réservations'}
         </h2>
         <button className="retour-btn" onClick={onRetour}>
           ← Retour au formulaire
         </button>
       </div>
 
-      <div className="search-section">
-        <form onSubmit={searchReservations}>
-          <div className="form-group">
-            <label>Email utilisé lors de l'inscription</label>
-            <input
-              type="email"
-              value={searchEmail}
-              onChange={(e) => setSearchEmail(e.target.value)}
-              required
-              placeholder="Entrez votre email"
-            />
-          </div>
-          <button 
-            type="submit" 
-            className="search-button"
-            disabled={searching}
-          >
-            {searching ? 'Recherche...' : 'Rechercher'}
-          </button>
-        </form>
-      </div>
+      {error && (
+        <div className="error-message">
+          {error}
+        </div>
+      )}
 
+      {/* Afficher directement les résultats si on a un email */}
       {reservations && (
         <div className="reservations-results">
           {reservations.length > 0 ? (
@@ -163,6 +136,31 @@ const MesReservations = ({ onRetour }) => {
               <p>Aucune réservation trouvée.</p>
             </div>
           )}
+        </div>
+      )}
+
+      {/* Afficher le formulaire de recherche uniquement si on n'a pas d'email */}
+      {!email && (
+        <div className="search-section">
+          <form onSubmit={searchReservations}>
+            <div className="form-group">
+              <label>Email utilisé lors de l'inscription</label>
+              <input
+                type="email"
+                value={searchEmail}
+                onChange={(e) => setSearchEmail(e.target.value)}
+                required
+                placeholder="Entrez votre email"
+              />
+            </div>
+            <button 
+              type="submit" 
+              className="search-button"
+              disabled={searching}
+            >
+              {searching ? 'Recherche...' : 'Rechercher'}
+            </button>
+          </form>
         </div>
       )}
     </div>
