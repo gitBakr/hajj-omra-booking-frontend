@@ -5,7 +5,6 @@ import MesReservations from './MesReservations';
 
 const API_URL = "https://hajj-omra-booking-backend.onrender.com/pelerin";
 const isDev = process.env.NODE_ENV === 'development';
-const ADMIN_EMAIL = 'raouanedev@gmail.com';
 
 const FormulairePelerin = ({ 
   onRetour = () => window.location.href = '/',
@@ -77,8 +76,6 @@ const FormulairePelerin = ({
   const [personnes, setPersonnes] = useState([]);
   const [showPersonneForm, setShowPersonneForm] = useState(false);
   const [showScrollTop, setShowScrollTop] = useState(false);
-  const [stats, setStats] = useState(null);
-  const [isAdmin, setIsAdmin] = useState(false);
 
   // Données pour la génération aléatoire
   const donneesFictives = {
@@ -410,54 +407,6 @@ const FormulairePelerin = ({
     }
   };
 
-  const fetchStats = async () => {
-    try {
-      const response = await fetch(`${API_URL}/stats`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          email: ADMIN_EMAIL
-        })
-      });
-
-      if (!response.ok) {
-        throw new Error('Erreur lors de la récupération des statistiques');
-      }
-
-      const data = await response.json();
-      setStats(data);
-    } catch (error) {
-      console.error('Erreur:', error);
-    }
-  };
-
-  useEffect(() => {
-    const checkAdmin = async () => {
-      try {
-        const response = await fetch(`${API_URL}/stats`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            email: ADMIN_EMAIL
-          })
-        });
-
-        if (response.ok) {
-          setIsAdmin(true);
-          fetchStats();
-        }
-      } catch (error) {
-        console.error('Erreur lors de la vérification admin:', error);
-      }
-    };
-
-    checkAdmin();
-  }, []);
-
   if (showReservations) {
     return <MesReservations onRetour={() => setShowReservations(false)} />;
   }
@@ -491,52 +440,6 @@ const FormulairePelerin = ({
           🔍 Voir mes réservations
         </button>
       </div>
-
-      {isAdmin && (
-        <div className="admin-panel">
-          <h3>Panel Administrateur</h3>
-          <div className="stats-container">
-            {stats ? (
-              <>
-                <div className="stat-item">
-                  <h4>Total Pèlerins</h4>
-                  <p>{stats.totalPelerins}</p>
-                </div>
-                <div className="stat-item">
-                  <h4>Hajj</h4>
-                  <p>{stats.totalHajj} inscrits</p>
-                </div>
-                <div className="stat-item">
-                  <h4>Omra</h4>
-                  <p>{stats.totalOmra} inscrits</p>
-                </div>
-                <div className="stat-item">
-                  <h4>Dernière inscription</h4>
-                  <p>{new Date(stats.derniereInscription).toLocaleDateString('fr-FR')}</p>
-                </div>
-              </>
-            ) : (
-              <p>Chargement des statistiques...</p>
-            )}
-          </div>
-          <div className="admin-actions">
-            <button 
-              onClick={fetchStats} 
-              className="refresh-stats-btn"
-            >
-              🔄 Rafraîchir les stats
-            </button>
-            {isDev && (
-              <button 
-                onClick={cleanDatabase}
-                className="clean-db-btn"
-              >
-                🗑️ Nettoyer la base de données
-              </button>
-            )}
-          </div>
-        </div>
-      )}
 
       <h2>Inscription au Hajj et Omra</h2>
       
