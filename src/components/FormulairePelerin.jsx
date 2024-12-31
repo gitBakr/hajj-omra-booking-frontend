@@ -4,7 +4,9 @@ import './FormulairePelerin.css';
 import MesReservations from './MesReservations';
 import emailjs from '@emailjs/browser';
 
-const API_URL = "https://hajj-omra-booking-backend.onrender.com/pelerin";
+const API_URL = process.env.NODE_ENV === 'development' 
+  ? "http://localhost:5000/pelerin"  // URL locale avec port 5000
+  : "https://hajj-omra-booking-backend.onrender.com/pelerin"; // URL production
 const isDev = process.env.NODE_ENV === 'development';
 
 // Ajouter ces constantes pour EmailJS
@@ -80,6 +82,8 @@ const FormulairePelerin = ({
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [searchEmail, setSearchEmail] = useState('');
   const [showEmailModal, setShowEmailModal] = useState(false);
+  const [showPriceModal, setShowPriceModal] = useState(false);
+  const [priceInfo, setPriceInfo] = useState({ basePrice: 0, supplement: 0, total: 0 });
 
   // Données pour la génération aléatoire
   const donneesFictives = {
@@ -151,7 +155,11 @@ const FormulairePelerin = ({
           },
           typePelerinage: formulaires[0].data.typePelerinage,
           dateDepart: formulaires[0].data.dateDepart,
-          besoinsSpeciaux: ''
+          besoinsSpeciaux: '',
+          chambre: {
+            type: 'quadruple',
+            supplement: 0
+          }
         }
       }
     ]);
@@ -268,6 +276,11 @@ const FormulairePelerin = ({
                Vous pouvez consulter vos réservations à tout moment.`
       });
 
+      // Ajouter le timer pour fermer le message après 10 secondes
+      setTimeout(() => {
+        setMessage({ type: '', text: '' });
+      }, 10000);
+
       // Réinitialiser le formulaire après succès
       setFormulaires([{
         id: 1,
@@ -357,14 +370,14 @@ const FormulairePelerin = ({
       console.log('🔍 Recherche pour email:', searchEmail);
       
       // Pour tous les utilisateurs (admin ou non), on redirige vers MesReservations
-        setShowReservations(true);
-        return;
+      setShowReservations(true);
+      return;
 
     } catch (error) {
       console.error('❌ Erreur:', error);
       setMessage({
         type: 'error',
-        text: 'Erreur lors de la recherche des réservations.'
+        text: 'Aucune réservation trouvée. Veuillez vérifier que vous avez entré le bon email.'
       });
     } finally {
       setSearching(false);
@@ -402,15 +415,13 @@ const FormulairePelerin = ({
   const cleanDatabase = async () => {
     if (window.confirm('⚠️ Êtes-vous sûr de vouloir supprimer toutes les données ?')) {
       try {
-        const response = await fetch(`${API_URL}/pelerin/clean`, {
+        const response = await fetch(`${API_URL}/clean`, {
           method: 'DELETE',
           headers: {
             'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            email: 'raouanedev@gmail.com'  // Email admin
-          })
+          }
         });
+
         const data = await response.json();
         alert('✅ ' + data.message);
       } catch (error) {
@@ -423,6 +434,31 @@ const FormulairePelerin = ({
   useEffect(() => {
     emailjs.init(EMAILJS_PUBLIC_KEY);
   }, []);
+
+  const calculerNombreChambres = () => {
+    let chambresStandard = 0;
+    let chambresSpeciales = 0;
+    
+    formulaires.forEach(form => {
+      if (form.data.chambre?.type === 'quadruple') {
+        // On accumule les clients standard pour diviser par 4 à la fin
+        chambresStandard++;
+      } else {
+        // Pour triple ou double, une chambre par personne
+        chambresSpeciales++;
+      }
+    });
+
+    // Calcul final des chambres standard (arrondi supérieur)
+    const totalChambresStandard = Math.ceil(chambresStandard / 4);
+    const totalChambres = totalChambresStandard + chambresSpeciales;
+
+    return {
+      standard: totalChambresStandard,
+      speciales: chambresSpeciales,
+      total: totalChambres
+    };
+  };
 
   if (showReservations) {
     return <MesReservations 
@@ -471,20 +507,7 @@ const FormulairePelerin = ({
           </button>
           <button 
             type="button" 
-            onClick={async () => {
-              if (window.confirm('⚠️ Êtes-vous sûr de vouloir supprimer toutes les données ?')) {
-                try {
-                  const response = await fetch(`${API_URL}/api/pelerins/clean`, {
-                    method: 'DELETE'
-                  });
-                  const data = await response.json();
-                  alert('✅ ' + data.message);
-                } catch (error) {
-                  console.error('Erreur:', error);
-                  alert('❌ Erreur lors du nettoyage');
-                }
-              }
-            }} 
+            onClick={cleanDatabase} 
             className="test-button clean-test"
           >
             Nettoyer DB
@@ -697,52 +720,75 @@ const FormulairePelerin = ({
             </div>
 
             <div className="form-section">
-              <h3>Choix de Chambre</h3>
-              <div className="form-row">
-                <div className="form-group">
-                  <label>Type de chambre (optionnel)</label>
-                  <select
-                    value={formulaire.data.chambre?.type || 'quadruple'}
-                    onChange={(e) => {
-                      const type = e.target.value;
-                      let supplement = 0;
-                      
-                      switch(type) {
-                        case 'double':
-                          supplement = 500;
-                          break;
-                        case 'triple':
-                          supplement = 250;
-                          break;
-                        default:
-                          supplement = 0;
-                      }
-                      
-                      handleChange(formulaire.id, 'chambre', {
-                        type: type,
-                        supplement: supplement
-                      });
-                    }}
-                    className="chambre-select"
-                  >
-                    <option value="quadruple">Chambre standard</option>
-                    <option value="triple">Chambre pour 3 personnes (+250€)</option>
-                    <option value="double">Chambre pour 2 personnes (+500€)</option>
-                  </select>
+              <h4>Type de Chambre</h4>
+              <select
+                value={formulaire.data.chambre?.type || 'quadruple'}
+                onChange={(e) => {
+                  const type = e.target.value;
+                  let supplement = 0;
+                  const basePrice = formulaire.data.typePelerinage === 'hajj' ? 6990 : 1490;
+                  
+                  switch(type) {
+                    case 'triple':
+                      supplement = 250;
+                      break;
+                    case 'double':
+                      supplement = 500;
+                      break;
+                    default:
+                      supplement = 0;
+                  }
+                  
+                  setPriceInfo({
+                    basePrice,
+                    supplement,
+                    total: basePrice + supplement
+                  });
+                  setShowPriceModal(true);
+                  
+                  // Ajouter le timer pour fermer automatiquement
+                  setTimeout(() => {
+                    setShowPriceModal(false);
+                  }, 10000); // 10 secondes
+                  
+                  handleChange(formulaire.id, 'chambre', {
+                    type: type,
+                    supplement: supplement
+                  });
+                }}
+                className="form-input"
+              >
+                <option value="quadruple">Chambre Quadruple (Standard - 4 personnes)</option>
+                <option value="triple">Chambre Triple (Supplément 250€)</option>
+                <option value="double">Chambre Double (Supplément 500€)</option>
+              </select>
+            </div>
+
+            {formulaire.data.chambre?.supplement > 0 && (
+              <div className="chambre-info">
+                <p>
+                  <strong>Supplément chambre :</strong> {formulaire.data.chambre.supplement}€
+                  <span className="chambre-detail">
+                    (Inclus dans le prix final)
+                  </span>
+                </p>
+              </div>
+            )}
+
+            {/* Modal pour afficher le prix */}
+            {showPriceModal && (
+              <div className="price-modal">
+                <div className="price-content">
+                  <h4>Détail du prix</h4>
+                  <p>Prix de base : {priceInfo.basePrice}€</p>
+                  {priceInfo.supplement > 0 && (
+                    <p>Supplément chambre : +{priceInfo.supplement}€</p>
+                  )}
+                  <p className="total-price">Total : {priceInfo.total}€</p>
+                  <button onClick={() => setShowPriceModal(false)}>Fermer</button>
                 </div>
               </div>
-
-              {formulaire.data.chambre?.supplement > 0 && (
-                <div className="chambre-info">
-                  <p>
-                    <strong>Supplément chambre :</strong> {formulaire.data.chambre.supplement}€
-                    <span className="chambre-detail">
-                      (Inclus dans le prix final)
-                    </span>
-                  </p>
-                </div>
-              )}
-            </div>
+            )}
           </div>
         ))}
 

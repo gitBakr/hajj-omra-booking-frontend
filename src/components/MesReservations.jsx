@@ -14,6 +14,31 @@ const MesReservations = ({ onRetour, email }) => {
   const [isAdmin, setIsAdmin] = useState(false);
   const [error, setError] = useState(null);
 
+  // Fonction de calcul des chambres
+  const calculerNombreChambres = () => {
+    if (!reservations) return { standard: 0, speciales: 0, total: 0 };
+    
+    let chambresStandard = 0;
+    let chambresSpeciales = 0;
+    
+    reservations.forEach(reservation => {
+      if (reservation.chambre?.type === 'quadruple') {
+        chambresStandard++;
+      } else {
+        chambresSpeciales++;
+      }
+    });
+
+    const totalChambresStandard = Math.ceil(chambresStandard / 4);
+    const totalChambres = totalChambresStandard + chambresSpeciales;
+
+    return {
+      standard: totalChambresStandard,
+      speciales: chambresSpeciales,
+      total: totalChambres
+    };
+  };
+
   // Charger les réservations dès que le composant est monté
   useEffect(() => {
     const fetchReservations = async () => {
@@ -81,6 +106,19 @@ const MesReservations = ({ onRetour, email }) => {
                       <h4>Répartition</h4>
                       <p>Hommes : {reservations.filter(r => r.civilite === 'M.').length}</p>
                       <p>Femmes : {reservations.filter(r => r.civilite === 'Mme' || r.civilite === 'Mlle').length}</p>
+                    </div>
+                  </div>
+                </div>
+              )}
+              {email === ADMIN_EMAIL && (
+                <div className="admin-panel">
+                  <h3>Statistiques</h3>
+                  <div className="stats-container">
+                    <div className="stat-item">
+                      <h4>Chambres nécessaires</h4>
+                      <p>Standard : {calculerNombreChambres().standard}</p>
+                      <p>Spéciales : {calculerNombreChambres().speciales}</p>
+                      <p>Total : {calculerNombreChambres().total}</p>
                     </div>
                   </div>
                 </div>
