@@ -1217,3 +1217,140 @@ body {
   .voyage-select:focus {
     background: #4d4d4d;
   }
+  
+  .optional-text {
+    font-size: 0.8em;
+    color: #888;
+    font-weight: normal;
+    font-style: italic;
+  }
+  
+  .steps-indicator {
+    display: flex;
+    justify-content: space-between;
+    margin: 20px 0 30px;
+    position: relative;
+  }
+  
+  .steps-indicator::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: #4a4a4a;
+    z-index: 1;
+  }
+  
+  .step {
+    position: relative;
+    background: #2d2d2d;
+    color: #666;
+    padding: 8px 15px;
+    border-radius: 20px;
+    font-size: 0.9em;
+    z-index: 2;
+    transition: all 0.3s ease;
+  }
+  
+  .step.active {
+    background: #DAA520;
+    color: #fff;
+  }
+  
+  .step-navigation {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid #4a4a4a;
+  }
+  
+  .prev-button,
+  .next-button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.3s ease;
+  }
+  
+  .prev-button {
+    background: #4a4a4a;
+    color: #fff;
+  }
+  
+  .next-button {
+    background: #DAA520;
+    color: #fff;
+  }
+  
+  .prev-button:hover {
+    background: #5a5a5a;
+  }
+  
+  .next-button:hover {
+    background: #FFD700;
+  }
+  
+  .input-error {
+    border-color: #ff4444 !important;
+    background-color: rgba(255, 68, 68, 0.1) !important;
+  }
+  
+  .input-error:focus {
+    box-shadow: 0 0 0 3px rgba(255, 68, 68, 0.2) !important;
+  }
+  
+  /* Style pour le message d'erreur */
+  .message-container.error {
+    background: rgba(255, 68, 68, 0.1);
+    border: 1px solid #ff4444;
+  }
+  
+  .message-container.error .message-content {
+    color: #ff4444;
+  }
+  
+  /* Responsive pour les étapes */
+  @media screen and (max-width: 768px) {
+    .steps-indicator {
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+    }
+  
+    .steps-indicator::before {
+      display: none; /* Cacher la ligne de progression sur mobile */
+    }
+  
+    .step {
+      font-size: 0.8em;
+      padding: 6px 12px;
+      flex: 0 0 auto;
+      width: calc(33.33% - 10px); /* 3 étapes par ligne */
+      text-align: center;
+      margin-bottom: 5px;
+    }
+  }
+  
+  @media screen and (max-width: 480px) {
+    .step {
+      width: calc(50% - 10px); /* 2 étapes par ligne */
+      font-size: 0.75em;
+      padding: 5px 10px;
+    }
+  
+    .steps-indicator {
+      margin: 15px 0 20px;
+    }
+  }
+  
+  @media screen and (max-width: 320px) {
+    .step {
+      width: 100%; /* 1 étape par ligne */
+      margin-bottom: 5px;
+    }
+  }

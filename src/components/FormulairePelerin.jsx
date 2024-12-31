@@ -55,19 +55,13 @@ const FormulairePelerin = ({
         nationalite: '',
         telephone: '',
         email: '',
-        adresse: {
-          numero: '',
-          rue: '',
-          ville: '',
-          codePostal: ''
-        },
         typePelerinage: 'hajj',
         dateDepart: 'Du 01 Mai au 20 Juin 2025',
         besoinsSpeciaux: '',
         chambre: {
           type: 'quadruple',
           supplement: 0
-        },
+        }
       }
     }
   ]);
@@ -82,6 +76,7 @@ const FormulairePelerin = ({
   const [showEmailModal, setShowEmailModal] = useState(false);
   const [showPriceModal, setShowPriceModal] = useState(false);
   const [priceInfo, setPriceInfo] = useState({ basePrice: 0, supplement: 0, total: 0 });
+  const [currentStep, setCurrentStep] = useState(1);
 
   // Données pour la génération aléatoire
   const donneesFictives = {
@@ -145,12 +140,6 @@ const FormulairePelerin = ({
           nationalite: '',
           telephone: '',
           email: '',
-          adresse: {
-            numero: '',
-            rue: '',
-            ville: '',
-            codePostal: ''
-          },
           typePelerinage: formulaires[0].data.typePelerinage,
           dateDepart: formulaires[0].data.dateDepart,
           besoinsSpeciaux: '',
@@ -244,9 +233,32 @@ const FormulairePelerin = ({
     }
   };
 
-  // Modifier handleSubmit pour inclure l'envoi d'email
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  // Ajouter une fonction pour réinitialiser le formulaire
+  const resetForm = () => {
+    setFormulaires([{
+      id: 1,
+      data: {
+        civilite: '',
+        nom: '',
+        prenom: '',
+        nationalite: '',
+        telephone: '',
+        email: '',
+        typePelerinage: 'hajj',
+        dateDepart: 'Du 01 Mai au 20 Juin 2025',
+        besoinsSpeciaux: '',
+        chambre: {
+          type: 'quadruple',
+          supplement: 0
+        }
+      }
+    }]);
+    setCurrentStep(1);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  // Modifier handleSubmit pour utiliser resetForm après succès
+  const handleSubmit = async () => {
     setLoading(true);
     setMessage({ type: '', text: '' });
 
@@ -274,38 +286,11 @@ const FormulairePelerin = ({
                Vous pouvez consulter vos réservations à tout moment.`
       });
 
-      // Ajouter le timer pour fermer le message après 10 secondes
+      // Réinitialiser le formulaire après 3 secondes
       setTimeout(() => {
+        resetForm();
         setMessage({ type: '', text: '' });
-      }, 10000);
-
-      // Réinitialiser le formulaire après succès
-      setFormulaires([{
-        id: 1,
-        data: {
-          civilite: '',
-          nom: '',
-          prenom: '',
-          nationalite: '',
-          telephone: '',
-          email: '',
-          adresse: {
-            numero: '',
-            rue: '',
-            ville: '',
-            codePostal: ''
-          },
-          typePelerinage: packType,
-          dateDepart: packType === 'hajj' ? 
-            'Du 01 Mai au 20 Juin 2025' : 
-            'Du 15 Mars au 05 Avril 2025',
-          besoinsSpeciaux: '',
-          chambre: {
-            type: 'quadruple',
-            supplement: 0
-          }
-        }
-      }]);
+      }, 3000);
 
       // Scroll en haut pour voir le message de succès
       window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -338,12 +323,6 @@ const FormulairePelerin = ({
         nationalite: getRandomElement(donneesFictives.nationalites),
         telephone: genererTelephone(),
         email: emailCommun,
-        adresse: {
-          numero: Math.floor(Math.random() * 100 + 1).toString(),
-          rue: getRandomElement(donneesFictives.rues),
-          ville: getRandomElement(donneesFictives.villes),
-          codePostal: getRandomElement(donneesFictives.codesPostaux)
-        },
         typePelerinage: formulaires[0].data.typePelerinage,
         dateDepart: formulaires[0].data.dateDepart,
         besoinsSpeciaux: getRandomElement(donneesFictives.besoinsSpeciaux),
@@ -458,6 +437,78 @@ const FormulairePelerin = ({
     };
   };
 
+  // Fonction de validation pour chaque étape
+  const validateStep = () => {
+    const form = formulaires[0].data;
+    
+    switch(currentStep) {
+      case 1:
+        // Validation du choix du voyage
+        return form.typePelerinage !== '';
+        
+      case 2:
+        // Validation des informations personnelles
+        return (
+          form.civilite !== '' &&
+          form.nom !== '' &&
+          form.prenom !== '' &&
+          form.nationalite !== ''
+        );
+        
+      case 3:
+        // Validation des contacts (email et téléphone obligatoires, adresse optionnelle)
+        return (
+          form.telephone !== '' &&
+          form.email !== '' &&
+          form.email.includes('@') // Validation basique d'email
+        );
+        
+      case 4:
+        // Validation de l'hébergement
+        return form.chambre?.type !== '';
+        
+      case 5:
+        // Pas de validation nécessaire pour les infos complémentaires
+        return true;
+        
+      default:
+        return false;
+    }
+  };
+
+  // Modifier la fonction nextStep pour inclure la validation
+  const nextStep = () => {
+    if (!validateStep()) {
+      setMessage({
+        type: 'error',
+        text: 'Veuillez remplir tous les champs obligatoires avant de continuer'
+      });
+      return;
+    }
+    
+    if (currentStep < 5) {
+      setCurrentStep(currentStep + 1);
+      setMessage({ type: '', text: '' }); // Effacer le message d'erreur
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
+
+  // Ajouter un style pour les champs requis non remplis
+  const getInputStyle = (value) => {
+    if (value === '' && validateStep() === false) {
+      return 'input-error';
+    }
+    return '';
+  };
+
+  // Fonction pour revenir à l'étape précédente
+  const prevStep = () => {
+    if (currentStep > 1) {
+      setCurrentStep(currentStep - 1);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
+
   if (showReservations) {
     return <MesReservations 
       onRetour={() => {
@@ -532,289 +583,208 @@ const FormulairePelerin = ({
         </div>
       )}
       
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={(e) => e.preventDefault()}>
         {formulaires.map((formulaire, index) => (
           <div key={formulaire.id} className="formulaire-section">
             <h3>Personne {index + 1}</h3>
-            {formulaires.length > 1 && (
-              <button
-                type="button"
-                onClick={() => supprimerFormulaire(formulaire.id)}
-                className="supprimer-formulaire-btn"
-              >
-                Supprimer
-              </button>
-            )}
 
-            {/* Type de Voyage */}
-            <div className="form-section">
-              <div className="section-title">
-                <h3>Choix du voyage</h3>
-                <p className="section-subtitle">Sélectionnez votre type de pèlerinage</p>
-              </div>
-              <select
-                value={formulaire.data.typePelerinage}
-                onChange={(e) => handleChange(formulaire.id, 'typePelerinage', e.target.value)}
-                className="voyage-select"
-              >
-                <option value="hajj">
-                  🕋 HAJJ 2025
-                </option>
-                <option value="omra">
-                  🌙 OMRA RAMADAN
-                </option>
-              </select>
+            {/* Indicateur d'étapes */}
+            <div className="steps-indicator">
+              <div className={`step ${currentStep >= 1 ? 'active' : ''}`}>1. Voyage</div>
+              <div className={`step ${currentStep >= 2 ? 'active' : ''}`}>2. Informations</div>
+              <div className={`step ${currentStep >= 3 ? 'active' : ''}`}>3. Contact</div>
+              <div className={`step ${currentStep >= 4 ? 'active' : ''}`}>4. Hébergement</div>
+              <div className={`step ${currentStep >= 5 ? 'active' : ''}`}>5. Compléments</div>
             </div>
 
-            {/* Informations Personnelles */}
-            <div className="form-section">
-              <h3>Informations Personnelles</h3>
-              <div className="form-row">
-                <div className="form-group">
-                  <label className="required-field">Civilité</label>
-                  <select
-                    value={formulaire.data.civilite}
-                    onChange={(e) => handleChange(formulaire.id, 'civilite', e.target.value)}
-                    required
-                    className="civilite-select"
-                  >
-                    <option value="">Sélectionnez</option>
-                    <option value="M.">Monsieur</option>
-                    <option value="Mme">Madame</option>
-                    <option value="Mlle">Mademoiselle</option>
-                  </select>
+            {/* Afficher uniquement l'étape courante */}
+            {currentStep === 1 && (
+              <div className="form-section">
+                <div className="section-title">
+                  <h3>1. Choix du voyage</h3>
+                  <p className="section-subtitle">Sélectionnez votre type de pèlerinage</p>
                 </div>
-                <div className="form-group">
-                  <label className="required-field">Nom</label>
-                  <input
-                    type="text"
-                    value={formulaire.data.nom}
-                    onChange={(e) => handleChange(formulaire.id, 'nom', e.target.value)}
-                    required
-                  />
-                </div>
-                <div className="form-group">
-                  <label className="required-field">Prénom</label>
-                  <input
-                    type="text"
-                    value={formulaire.data.prenom}
-                    onChange={(e) => handleChange(formulaire.id, 'prenom', e.target.value)}
-                    required
-                  />
-                </div>
-              </div>
-
-              <div className="form-row">
-                <div className="form-group">
-                  <label className="required-field">Nationalité</label>
-                  <input
-                    type="text"
-                    value={formulaire.data.nationalite}
-                    onChange={(e) => handleChange(formulaire.id, 'nationalite', e.target.value)}
-                    required
-                  />
-                </div>
-              </div>
-            </div>
-
-            <div className="form-section">
-              <h3>Contact</h3>
-              <div className="form-row">
-                <div className="form-group">
-                  <label className="required-field">Téléphone</label>
-                  <input
-                    type="tel"
-                    value={formulaire.data.telephone}
-                    onChange={(e) => handleChange(formulaire.id, 'telephone', e.target.value)}
-                    required
-                  />
-                </div>
-                <div className="form-group">
-                  <label className="required-field">Email</label>
-                  <input
-                    type="email"
-                    value={formulaire.data.email}
-                    onChange={(e) => handleChange(formulaire.id, 'email', e.target.value)}
-                    required
-                  />
-                </div>
-              </div>
-              
-              {/* Nouveaux champs d'adresse */}
-              <div className="form-row">
-                <div className="form-group">
-                  <label className="required-field">Numéro</label>
-                  <input
-                    type="text"
-                    value={formulaire.data.adresse.numero}
-                    onChange={(e) => handleChange(formulaire.id, 'adresse', {
-                      ...formulaire.data.adresse,
-                      numero: e.target.value
-                    })}
-                    placeholder="Ex: 12"
-                    required
-                  />
-                </div>
-                <div className="form-group">
-                  <label className="required-field">Rue</label>
-                  <input
-                    type="text"
-                    value={formulaire.data.adresse.rue}
-                    onChange={(e) => handleChange(formulaire.id, 'adresse', {
-                      ...formulaire.data.adresse,
-                      rue: e.target.value
-                    })}
-                    placeholder="Ex: rue de la Paix"
-                    required
-                  />
-                </div>
-              </div>
-              <div className="form-row">
-                <div className="form-group">
-                  <label className="required-field">Code Postal</label>
-                  <input
-                    type="text"
-                    value={formulaire.data.adresse.codePostal}
-                    onChange={(e) => handleChange(formulaire.id, 'adresse', {
-                      ...formulaire.data.adresse,
-                      codePostal: e.target.value
-                    })}
-                    placeholder="Ex: 75001"
-                    pattern="[0-9]{5}"
-                    required
-                  />
-                </div>
-                <div className="form-group">
-                  <label className="required-field">Ville</label>
-                  <input
-                    type="text"
-                    value={formulaire.data.adresse.ville}
-                    onChange={(e) => handleChange(formulaire.id, 'adresse', {
-                      ...formulaire.data.adresse,
-                      ville: e.target.value
-                    })}
-                    placeholder="Ex: Paris"
-                    required
-                  />
-                </div>
-              </div>
-            </div>
-
-            <div className="form-section">
-              <h3>Informations Complémentaires</h3>
-              <div className="form-group">
-                <label>Besoins Spéciaux</label>
-                <textarea
-                  value={formulaire.data.besoinsSpeciaux}
-                  onChange={(e) => handleChange(formulaire.id, 'besoinsSpeciaux', e.target.value)}
-                  placeholder="Précisez vos besoins particuliers (régime alimentaire, assistance médicale, etc.)"
-                />
-              </div>
-            </div>
-
-            <div className="form-section">
-              <h4>Type de Chambre</h4>
-              <select
-                value={formulaire.data.chambre?.type || 'quadruple'}
-                onChange={(e) => {
-                  const type = e.target.value;
-                  let supplement = 0;
-                  const basePrice = formulaire.data.typePelerinage === 'hajj' ? 6990 : 1490;
-                  
-                  switch(type) {
-                    case 'triple':
-                      supplement = 250;
-                      break;
-                    case 'double':
-                      supplement = 500;
-                      break;
-                    default:
-                      supplement = 0;
-                  }
-                  
-                  setPriceInfo({
-                    basePrice,
-                    supplement,
-                    total: basePrice + supplement
-                  });
-                  setShowPriceModal(true);
-                  
-                  // Ajouter le timer pour fermer automatiquement
-                  setTimeout(() => {
-                    setShowPriceModal(false);
-                  }, 10000); // 10 secondes
-                  
-                  handleChange(formulaire.id, 'chambre', {
-                    type: type,
-                    supplement: supplement
-                  });
-                }}
-                className="form-input"
-              >
-                <option value="quadruple">Chambre Quadruple (Standard - 4 personnes)</option>
-                <option value="triple">Chambre Triple (Supplément 250€)</option>
-                <option value="double">Chambre Double (Supplément 500€)</option>
-              </select>
-            </div>
-
-            {formulaire.data.chambre?.supplement > 0 && (
-              <div className="chambre-info">
-                <p>
-                  <strong>Supplément chambre :</strong> {formulaire.data.chambre.supplement}€
-                  <span className="chambre-detail">
-                    (Inclus dans le prix final)
-                  </span>
-                </p>
+                <select
+                  value={formulaire.data.typePelerinage}
+                  onChange={(e) => handleChange(formulaire.id, 'typePelerinage', e.target.value)}
+                  className="voyage-select"
+                >
+                  <option value="hajj">🕋 HAJJ 2025</option>
+                  <option value="omra">🌙 OMRA RAMADAN</option>
+                </select>
               </div>
             )}
 
-            {/* Modal pour afficher le prix */}
-            {showPriceModal && (
-              <div className="price-modal">
-                <div className="price-content">
-                  <h4>Détail du prix</h4>
-                  <p>Prix de base : {priceInfo.basePrice}€</p>
-                  {priceInfo.supplement > 0 && (
-                    <p>Supplément chambre : +{priceInfo.supplement}€</p>
-                  )}
-                  <p className="total-price">Total : {priceInfo.total}€</p>
-                  <button onClick={() => setShowPriceModal(false)}>Fermer</button>
+            {currentStep === 2 && (
+              <div className="form-section">
+                <div className="section-title">
+                  <h3>2. Informations Personnelles</h3>
+                </div>
+                <div className="form-row">
+                  <div className="form-group">
+                    <label className="required-field">Civilité</label>
+                    <select
+                      value={formulaire.data.civilite}
+                      onChange={(e) => handleChange(formulaire.id, 'civilite', e.target.value)}
+                      required
+                      className="civilite-select"
+                    >
+                      <option value="">Sélectionnez</option>
+                      <option value="M.">Monsieur</option>
+                      <option value="Mme">Madame</option>
+                      <option value="Mlle">Mademoiselle</option>
+                    </select>
+                  </div>
+                  <div className="form-group">
+                    <label className="required-field">Nom</label>
+                    <input
+                      type="text"
+                      value={formulaire.data.nom}
+                      onChange={(e) => handleChange(formulaire.id, 'nom', e.target.value)}
+                      required
+                      className={getInputStyle(formulaire.data.nom)}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label className="required-field">Prénom</label>
+                    <input
+                      type="text"
+                      value={formulaire.data.prenom}
+                      onChange={(e) => handleChange(formulaire.id, 'prenom', e.target.value)}
+                      required
+                    />
+                  </div>
+                </div>
+                <div className="form-row">
+                  <div className="form-group">
+                    <label className="required-field">Nationalité</label>
+                    <input
+                      type="text"
+                      value={formulaire.data.nationalite}
+                      onChange={(e) => handleChange(formulaire.id, 'nationalite', e.target.value)}
+                      required
+                    />
+                  </div>
                 </div>
               </div>
             )}
+
+            {currentStep === 3 && (
+              <div className="form-section">
+                <div className="section-title">
+                  <h3>3. Contact</h3>
+                </div>
+                <div className="form-row">
+                  <div className="form-group">
+                    <label className="required-field">Téléphone</label>
+                    <input
+                      type="tel"
+                      value={formulaire.data.telephone}
+                      onChange={(e) => handleChange(formulaire.id, 'telephone', e.target.value)}
+                      required
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label className="required-field">Email</label>
+                    <input
+                      type="email"
+                      value={formulaire.data.email}
+                      onChange={(e) => handleChange(formulaire.id, 'email', e.target.value)}
+                      required
+                    />
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {currentStep === 4 && (
+              <div className="form-section">
+                <div className="section-title">
+                  <h3>4. Hébergement</h3>
+                </div>
+                <select
+                  value={formulaire.data.chambre?.type || 'quadruple'}
+                  onChange={(e) => {
+                    const type = e.target.value;
+                    let supplement = 0;
+                    const basePrice = formulaire.data.typePelerinage === 'hajj' ? 6990 : 1490;
+                    
+                    switch(type) {
+                      case 'triple':
+                        supplement = 250;
+                        break;
+                      case 'double':
+                        supplement = 500;
+                        break;
+                      default:
+                        supplement = 0;
+                    }
+                    
+                    setPriceInfo({
+                      basePrice,
+                      supplement,
+                      total: basePrice + supplement
+                    });
+                    setShowPriceModal(true);
+                    
+                    setTimeout(() => {
+                      setShowPriceModal(false);
+                    }, 10000);
+                    
+                    handleChange(formulaire.id, 'chambre', {
+                      type: type,
+                      supplement: supplement
+                    });
+                  }}
+                  className="form-input"
+                >
+                  <option value="quadruple">Chambre Quadruple (Standard - 4 personnes)</option>
+                  <option value="triple">Chambre Triple (Supplément 250€)</option>
+                  <option value="double">Chambre Double (Supplément 500€)</option>
+                </select>
+              </div>
+            )}
+
+            {currentStep === 5 && (
+              <div className="form-section">
+                <div className="section-title">
+                  <h3>5. Informations Complémentaires</h3>
+                </div>
+                <div className="form-group">
+                  <label>Besoins Spéciaux</label>
+                  <textarea
+                    value={formulaire.data.besoinsSpeciaux}
+                    onChange={(e) => handleChange(formulaire.id, 'besoinsSpeciaux', e.target.value)}
+                    placeholder="Précisez vos besoins particuliers (régime alimentaire, assistance médicale, etc.)"
+                  />
+                </div>
+              </div>
+            )}
+
+            {/* Boutons de navigation */}
+            <div className="step-navigation">
+              {currentStep > 1 && (
+                <button type="button" onClick={prevStep} className="prev-button">
+                  ← Retour
+                </button>
+              )}
+              {currentStep < 5 ? (
+                <button type="button" onClick={nextStep} className="next-button">
+                  Suivant →
+                </button>
+              ) : (
+                <button 
+                  type="button"
+                  onClick={handleSubmit} 
+                  className="submit-button" 
+                  disabled={loading}
+                >
+                  {loading ? 'Envoi en cours...' : 'ENVOYER'}
+                </button>
+              )}
+            </div>
           </div>
         ))}
-
-        <div className="form-actions">
-          {formulaires.length < 5 && (
-            <button
-              type="button"
-              onClick={ajouterFormulaire}
-              className="ajouter-button"
-            >
-              + Ajouter une personne
-            </button>
-          )}
-
-          <button 
-            type="submit" 
-            className="submit-button"
-            disabled={loading}
-          >
-            {loading ? (
-              'Envoi en cours...'
-            ) : (
-              <>
-                ENVOYER
-                {formulaires.length > 1 && (
-                  <span className="personnes-count">
-                    ({formulaires.length} personnes)
-                  </span>
-                )}
-              </>
-            )}
-          </button>
-        </div>
       </form>
 
       {showScrollTop && (
@@ -837,29 +807,29 @@ const FormulairePelerin = ({
             >
               ×
             </button>
-            <form onSubmit={(e) => {
-              e.preventDefault();
-              setShowEmailModal(false);
-              setShowReservations(true);
-            }}>
-              <div className="form-group">
-                <label>Email utilisé lors de l'inscription</label>
-                <input
-                  type="email"
-                  value={searchEmail}
-                  onChange={(e) => setSearchEmail(e.target.value)}
-                  required
-                  placeholder="Entrez votre email"
-                  className="modal-input"
-                />
-              </div>
-              <button 
-                type="submit" 
-                className="modal-submit-btn"
-              >
-                Rechercher
-              </button>
-            </form>
+            <div className="form-group">
+              <label>Email utilisé lors de l'inscription</label>
+              <input
+                type="email"
+                value={searchEmail}
+                onChange={(e) => setSearchEmail(e.target.value)}
+                required
+                placeholder="Entrez votre email"
+                className="modal-input"
+              />
+            </div>
+            <button 
+              type="button"
+              className="modal-submit-btn"
+              onClick={() => {
+                if (searchEmail) {
+                  setShowEmailModal(false);
+                  setShowReservations(true);
+                }
+              }}
+            >
+              Rechercher
+            </button>
           </div>
         </div>
       )}
