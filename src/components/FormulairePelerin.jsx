@@ -11,7 +11,6 @@ const isDev = process.env.NODE_ENV === 'development';
 const EMAILJS_SERVICE_ID = "service_izw1pma";
 const EMAILJS_TEMPLATE_ID = "template_hjonhtm";
 const EMAILJS_PUBLIC_KEY = "ktYqhkd2pNkTEmsbp";
-const EMAILJS_PRIVATE_KEY = "P7yGooEdf2UWxDULKGNhN";
 
 const FormulairePelerin = ({ 
   onRetour = () => window.location.href = '/',
@@ -220,9 +219,6 @@ const FormulairePelerin = ({
   // Modifier la fonction d'envoi d'email
   const envoyerEmailConfirmation = async (email, details) => {
     try {
-      // Initialiser avec la Private Key pour plus de sécurité
-      emailjs.init(EMAILJS_PRIVATE_KEY);
-      
       const response = await emailjs.send(
         EMAILJS_SERVICE_ID,
         EMAILJS_TEMPLATE_ID,
@@ -234,7 +230,6 @@ const FormulairePelerin = ({
           nombre_personnes: details.nombrePersonnes
         }
       );
-
       console.log('✉️ Email envoyé avec succès:', response);
       return response;
     } catch (error) {
