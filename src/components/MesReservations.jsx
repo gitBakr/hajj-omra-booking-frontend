@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './MesReservations.css';
 
-const API_URL = 'http://localhost:5001';
+const API_URL = 'https://hajj-omra-booking-backend.onrender.com/pelerin';
 const ADMIN_EMAIL = 'raouanedev@gmail.com';
 
 const formatChambreType = (chambre) => {
@@ -19,10 +19,34 @@ const MesReservations = ({ onRetour }) => {
     e.preventDefault();
     setSearching(true);
     try {
-      const response = await fetch(`${API_URL}/api/pelerins/search?email=${searchEmail}`);
+      const response = await fetch(`${API_URL}/search?email=${searchEmail}`, {
+        headers: {
+          'Accept': 'application/json'
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error(`Erreur HTTP: ${response.status}`);
+      }
+
       const data = await response.json();
-      setReservations(data.reservations);
-      setIsAdmin(data.isAdmin);
+      setReservations(data);
+
+      // Si c'est l'admin, on récupère aussi les stats
+      if (searchEmail === ADMIN_EMAIL) {
+        const statsResponse = await fetch(`${API_URL}/stats`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ email: searchEmail })
+        });
+
+        if (statsResponse.ok) {
+          const statsData = await statsResponse.json();
+          setIsAdmin(true);
+        }
+      }
     } catch (error) {
       console.error('Erreur:', error);
       setReservations([]);
