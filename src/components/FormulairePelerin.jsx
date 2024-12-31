@@ -68,10 +68,6 @@ const FormulairePelerin = ({
   const [message, setMessage] = useState({ type: '', text: '' });
   const [loading, setLoading] = useState(false);
   const formRef = useRef(null);
-  const [showModal, setShowModal] = useState(false);
-  const [searchEmail, setSearchEmail] = useState('');
-  const [reservations, setReservations] = useState(null);
-  const [searching, setSearching] = useState(false);
   const [showReservations, setShowReservations] = useState(false);
   const [personnes, setPersonnes] = useState([]);
   const [showPersonneForm, setShowPersonneForm] = useState(false);
@@ -395,7 +391,11 @@ const FormulairePelerin = ({
 
   if (showReservations) {
     return <MesReservations 
-      onRetour={() => setShowReservations(false)} 
+      onRetour={() => {
+        setShowReservations(false);
+        setSearchEmail('');  // Réinitialiser l'email de recherche
+        setMessage({ type: '', text: '' }); // Nettoyer les messages
+      }} 
       email={searchEmail}
     />;
   }
@@ -422,7 +422,7 @@ const FormulairePelerin = ({
           type="button" 
           className="view-reservations-btn"
           onClick={() => {
-            setShowModal(true);
+            setShowReservations(true);
             setMessage({ type: '', text: '' });
           }}
         >
@@ -726,92 +726,6 @@ const FormulairePelerin = ({
           </button>
         </div>
       </form>
-
-      {showModal && (
-        <div className="modal-overlay">
-          <div className="modal-content">
-            <button 
-              className="modal-close" 
-              onClick={() => {
-                setShowModal(false);
-                setReservations(null);
-                setSearchEmail('');
-              }}
-            >
-              ×
-            </button>
-            <h3>Rechercher mes réservations</h3>
-            
-            <form onSubmit={searchReservations} className="search-form">
-              <div className="form-group">
-                <label>Email utilisé lors de l'inscription</label>
-                <input
-                  type="email"
-                  value={searchEmail}
-                  onChange={(e) => setSearchEmail(e.target.value)}
-                  required
-                  placeholder="Entrez votre email"
-                />
-              </div>
-              <button 
-                type="submit" 
-                className="search-button"
-                disabled={searching}
-              >
-                {searching ? 'Recherche...' : 'Rechercher'}
-              </button>
-            </form>
-
-            {reservations && (
-              <div className="reservations-results">
-                {reservations.length > 0 ? (
-                  <div className="reservations-list">
-                    {reservations.map((reservation, index) => (
-                      <div key={index} className="reservation-card">
-                        <div className="reservation-header">
-                          <h4>{reservation.typePelerinage === 'hajj' ? 'Hajj 2025' : 'Omra Ramadhan'}</h4>
-                          <span className="person-number">Personne {index + 1}</span>
-                        </div>
-                        <div className="reservation-details">
-                          <p><strong>Date de départ:</strong> {reservation.dateDepart}</p>
-                          <p>
-                            <strong>Identité:</strong> {reservation.civilite} {reservation.prenom} {reservation.nom}
-                          </p>
-                          <p><strong>Email:</strong> {reservation.email}</p>
-                          <p><strong>Téléphone:</strong> {reservation.telephone}</p>
-                          <p><strong>Nationalité:</strong> {reservation.nationalite}</p>
-                          <p>
-                            <strong>Adresse:</strong> {reservation.adresse.numero} {reservation.adresse.rue}, 
-                            {reservation.adresse.codePostal} {reservation.adresse.ville}
-                          </p>
-                          {reservation.besoinsSpeciaux && (
-                            <p><strong>Besoins spéciaux:</strong> {reservation.besoinsSpeciaux}</p>
-                          )}
-                          <p>
-                            <strong>Date d'inscription:</strong> {
-                              new Date(reservation.dateInscription).toLocaleDateString('fr-FR', {
-                                day: 'numeric',
-                                month: 'long',
-                                year: 'numeric',
-                                hour: '2-digit',
-                                minute: '2-digit'
-                              })
-                            }
-                          </p>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <div className="no-reservations">
-                    <p>Aucune réservation trouvée pour cet email.</p>
-                  </div>
-                )}
-              </div>
-            )}
-          </div>
-        </div>
-      )}
 
       {showScrollTop && (
         <button 
