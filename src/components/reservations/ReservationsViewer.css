@@ -1,28 +1,44 @@
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.85);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  padding: 2rem;
+}
+
 .reservations-modal {
   background: #1a1a1a;
-  padding: 2rem;
-  border-radius: 15px;
-  width: 90%;
-  max-width: 800px;
+  border-radius: 20px;
+  width: 100%;
+  max-width: 900px;
   max-height: 90vh;
   overflow-y: auto;
-  position: relative;
-  border: 1px solid #DAA520;
-  margin: 2rem auto;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  border: 2px solid #DAA520;
 }
 
 .modal-header {
+  background: #2a2a2a;
+  padding: 1.5rem 2rem;
+  border-bottom: 2px solid #DAA520;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 2rem;
-  padding-bottom: 1rem;
-  border-bottom: 2px solid #DAA520;
+  position: sticky;
+  top: 0;
+  z-index: 1;
 }
 
 .modal-header h2 {
   color: #DAA520;
   margin: 0;
+  font-size: 1.8rem;
 }
 
 .close-btn {
@@ -31,39 +47,57 @@
   color: #DAA520;
   font-size: 2rem;
   cursor: pointer;
-  padding: 0;
+  padding: 0.5rem;
   line-height: 1;
+  transition: all 0.3s ease;
+}
+
+.close-btn:hover {
+  transform: rotate(90deg);
+  color: #fff;
 }
 
 .reservations-list {
-  display: grid;
-  gap: 1.5rem;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
 }
 
 .reservation-card {
   background: #2a2a2a;
-  border-radius: 12px;
-  padding: 1.5rem;
+  border-radius: 15px;
+  overflow: hidden;
   border: 1px solid #DAA520;
+  transition: all 0.3s ease;
+}
+
+.reservation-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 5px 15px rgba(218, 165, 32, 0.2);
 }
 
 .reservation-header {
+  background: #333;
+  padding: 1.5rem;
+  border-bottom: 1px solid #DAA520;
+}
+
+.header-main {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1.5rem;
-  text-align: center;
-}
-
-.reservation-header h3 {
-  color: #DAA520;
-  margin: 0;
+  margin-bottom: 0.5rem;
 }
 
 .type-badge {
   padding: 0.5rem 1rem;
   border-radius: 20px;
   font-weight: bold;
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .type-badge.hajj {
@@ -76,134 +110,168 @@
   color: white;
 }
 
-.reservation-details {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 1.5rem;
-  text-align: center;
-}
-
-.detail-group {
-  margin-bottom: 1rem;
-  text-align: center;
-}
-
-.detail-group label {
-  display: block;
+.reservation-date {
   color: #DAA520;
-  margin-bottom: 0.5rem;
   font-size: 0.9rem;
 }
 
-.detail-group p {
-  color: #fff;
-  margin: 0.3rem 0;
+.reservation-id {
+  color: #888;
+  font-size: 0.9rem;
 }
 
-.no-reservations {
-  text-align: center;
+.reservation-body {
+  padding: 1.5rem;
+}
+
+.info-section {
+  margin-bottom: 2rem;
+}
+
+.info-section h3 {
   color: #DAA520;
-  padding: 2rem;
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+}
+
+.info-item {
+  background: #333;
+  padding: 1rem;
+  border-radius: 10px;
+}
+
+.info-item label {
+  color: #DAA520;
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+.info-item p {
+  color: #fff;
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.chambre-type {
+  color: #4CAF50 !important;
+  font-weight: bold;
+}
+
+.supplement {
+  color: #DAA520 !important;
+  font-weight: bold;
 }
 
 .reservation-actions {
-  margin-top: 1.5rem;
-  text-align: center;
+  padding: 1.5rem;
+  background: #333;
+  border-top: 1px solid #DAA520;
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
 }
 
-.download-btn {
-  padding: 0.8rem 2rem;
-  background: transparent;
-  color: #DAA520;
-  border: 2px solid #DAA520;
+.action-btn {
+  padding: 0.8rem 1.5rem;
+  border: none;
   border-radius: 8px;
   cursor: pointer;
   font-size: 1rem;
-  transition: all 0.3s ease;
-  white-space: nowrap;
-  min-width: 250px;
-}
-
-.download-btn:hover {
-  background: rgba(218, 165, 32, 0.1);
-}
-
-.scroll-top-btn {
-  position: fixed;
-  bottom: 2rem;
-  right: 2rem;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background: #DAA520;
-  color: #000;
-  border: none;
-  font-size: 1.5rem;
-  cursor: pointer;
   display: flex;
   align-items: center;
-  justify-content: center;
+  gap: 0.5rem;
   transition: all 0.3s ease;
-  z-index: 1000;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
 
-.scroll-top-btn:hover {
-  background: #c69500;
-  transform: translateY(-3px);
+.action-btn.download {
+  background: #DAA520;
+  color: #000;
+}
+
+.action-btn.contact {
+  background: transparent;
+  border: 2px solid #DAA520;
+  color: #DAA520;
+}
+
+.action-btn:hover {
+  transform: translateY(-2px);
+  opacity: 0.9;
+}
+
+.no-reservations {
+  padding: 4rem 2rem;
+  text-align: center;
+  color: #888;
+}
+
+.no-reservations .icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  display: block;
 }
 
 @media (max-width: 768px) {
-  .reservations-modal {
+  .modal-overlay {
     padding: 1rem;
-    width: 95%;
-    margin: 1rem auto;
+  }
+
+  .reservations-modal {
+    border-radius: 15px;
+  }
+
+  .modal-header {
+    padding: 1rem;
   }
 
   .modal-header h2 {
     font-size: 1.5rem;
   }
 
-  .reservation-details {
+  .reservations-list {
+    padding: 1rem;
+    gap: 1rem;
+  }
+
+  .reservation-header,
+  .reservation-body,
+  .reservation-actions {
+    padding: 1rem;
+  }
+
+  .info-grid {
     grid-template-columns: 1fr;
     gap: 1rem;
   }
 
-  .detail-group {
-    padding: 0.5rem;
+  .reservation-actions {
+    flex-direction: column;
   }
 
-  .download-btn {
+  .action-btn {
     width: 100%;
-    min-width: unset;
-    padding: 0.8rem 1rem;
-  }
-
-  .scroll-top-btn {
-    bottom: 1rem;
-    right: 1rem;
-    width: 35px;
-    height: 35px;
-    font-size: 1.2rem;
+    justify-content: center;
   }
 }
 
-@media (max-width: 480px) {
-  .reservations-modal {
-    width: 98%;
-    padding: 0.8rem;
-  }
+.total {
+  margin-top: 1rem;
+  border-top: 1px solid rgba(218, 165, 32, 0.3);
+  padding-top: 1rem;
+}
 
-  .reservation-card {
-    padding: 1rem;
-  }
-
-  .modal-header h2 {
-    font-size: 1.2rem;
-  }
-
-  .type-badge {
-    padding: 0.4rem 0.8rem;
-    font-size: 0.9rem;
-  }
+.total-price {
+  color: #DAA520;
+  font-size: 1.2rem;
+  font-weight: bold;
 } 

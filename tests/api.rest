@@ -238,3 +238,32 @@ Content-Type: application/json
     "titre": "HAJJ 2024 - Pack VIP",
     "prix": 7990
 } 
+
+### Créer une réservation test
+POST https://hajj-omra-booking-backend.onrender.com/pelerin
+Content-Type: application/json
+
+{
+    "civilite": "Mme",
+    "nom": "Rahma",
+    "prenom": "Test",
+    "nationalite": "Française",
+    "telephone": "0612345678",
+    "email": "rahma@gmail.com",
+    "adresse": {
+        "numero": "123",
+        "rue": "Rue Test",
+        "ville": "Paris",
+        "codePostal": "75001"
+    },
+    "typePelerinage": "hajj",
+    "dateDepart": "2024-06-15",
+    "besoinsSpeciaux": "Aucun",
+    "chambre": {
+        "type": "double",
+        "supplement": 0
+    }
+}
+
+### Puis rechercher la réservation
+GET https://hajj-omra-booking-backend.onrender.com/pelerin/search?email=rahma@gmail.com

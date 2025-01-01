@@ -15,6 +15,7 @@ const AdminPanel = () => {
     chambres: { double: 0, triple: 0, quadruple: 0 }
   });
   const [loading, setLoading] = useState(true);
+  const [message, setMessage] = useState(null);
 
   useEffect(() => {
     loadAdminData();
@@ -64,6 +65,51 @@ const AdminPanel = () => {
     navigate('/');
   };
 
+  const handleCleanDB = async () => {
+    if (!window.confirm('⚠️ Êtes-vous sûr de vouloir nettoyer la base de données ? Cette action est irréversible.')) {
+      return;
+    }
+
+    try {
+      setLoading(true);
+      setMessage(null);
+
+      const response = await fetch(`${baseUrl}/admin/clean-db`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ email: ADMIN_EMAIL })
+      });
+
+      if (!response.ok) {
+        throw new Error(`Erreur ${response.status}: ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      console.log('Réponse nettoyage:', data);
+
+      setMessage({
+        type: 'success',
+        text: '✅ Base de données nettoyée avec succès !'
+      });
+
+      // Recharger la page après 2 secondes
+      setTimeout(() => {
+        window.location.reload();
+      }, 2000);
+
+    } catch (error) {
+      console.error('Erreur:', error);
+      setMessage({
+        type: 'error',
+        text: '❌ Erreur lors du nettoyage de la base de données'
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="admin-panel">
       <div className="admin-header">
@@ -78,8 +124,21 @@ const AdminPanel = () => {
           <button onClick={handleLogout} className="logout-btn">
             Déconnexion
           </button>
+          <button
+            className="clean-db-btn"
+            onClick={handleCleanDB}
+            disabled={loading}
+          >
+            {loading ? 'Nettoyage...' : '🗑️ Nettoyer la base de données'}
+          </button>
         </div>
       </div>
+
+      {message && (
+        <div className={`admin-message ${message.type}`}>
+          {message.text}
+        </div>
+      )}
 
       <div className="stats-section">
         <h2>Statistiques</h2>

@@ -13,6 +13,33 @@ import { StepNavigation } from './common/StepNavigation';
 import { EmailModal, PriceModal } from './modals';
 import { useModals } from '../hooks/useModals';
 
+const TEST_DATA = [
+  {
+    civilite: 'M.',
+    prenom: 'Ahmed',
+    nom: 'Benali',
+    nationalite: 'Tunisienne',
+    telephone: '0612345678',
+    email: 'ahmed.test@gmail.com'
+  },
+  {
+    civilite: 'Mme',
+    prenom: 'Fatima',
+    nom: 'Zahra',
+    nationalite: 'Marocaine',
+    telephone: '0687654321',
+    email: 'fatima.test@gmail.com'
+  },
+  {
+    civilite: 'M.',
+    prenom: 'Karim',
+    nom: 'Mansouri',
+    nationalite: 'Algérienne',
+    telephone: '0698765432',
+    email: 'karim.test@gmail.com'
+  }
+];
+
 const FormulairePelerin = ({ onRetour, packType }) => {
   const [currentStep, setCurrentStep] = useState(1);
   
@@ -97,8 +124,39 @@ const FormulairePelerin = ({ onRetour, packType }) => {
     setCurrentStep(prev => Math.max(prev - 1, 1));
   };
 
+  const handleTestFill = () => {
+    const randomData = TEST_DATA[Math.floor(Math.random() * TEST_DATA.length)];
+    const randomChambre = {
+      type: ['double', 'triple', 'quadruple'][Math.floor(Math.random() * 3)],
+      supplement: [0, 250, 500][Math.floor(Math.random() * 3)]
+    };
+
+    handleChange(1, 'civilite', randomData.civilite);
+    handleChange(1, 'prenom', randomData.prenom);
+    handleChange(1, 'nom', randomData.nom);
+    handleChange(1, 'nationalite', randomData.nationalite);
+    handleChange(1, 'telephone', randomData.telephone);
+    handleChange(1, 'email', randomData.email);
+    handleChange(1, 'chambre', randomChambre);
+
+    if (offres.hajj.length > 0 || offres.omra.length > 0) {
+      const allOffres = [...offres.hajj, ...offres.omra];
+      const randomOffre = allOffres[Math.floor(Math.random() * allOffres.length)];
+      handleOffreSelect(randomOffre);
+    }
+  };
+
   return (
     <div className="formulaire-container">
+      {process.env.NODE_ENV === 'development' && (
+        <button 
+          onClick={handleTestFill}
+          className="test-fill-btn"
+          title="Remplir avec des données de test"
+        >
+          🧪 Mode Test
+        </button>
+      )}
       <MessageBanner message={message} />
       <Header onShowReservations={openEmailModal} />
 

@@ -7,6 +7,7 @@ import './Modal.css';
 import './EmailModal.css';
 
 const ADMIN_EMAIL = 'raouanedev@gmail.com';
+const baseUrl = 'https://hajj-omra-booking-backend.onrender.com';
 
 export const EmailModal = ({ show, onClose, onSubmit }) => {
   const [email, setEmail] = useState('');
@@ -32,7 +33,7 @@ export const EmailModal = ({ show, onClose, onSubmit }) => {
 
       // Recherche des réservations
       const response = await fetch(
-        `https://hajj-omra-booking-backend.onrender.com/pelerin/search?email=${encodeURIComponent(email)}`
+        `${baseUrl}/pelerin/search?email=${encodeURIComponent(email.trim().toLowerCase())}`
       );
       console.log('Statut de la réponse:', response.status);
       
@@ -49,7 +50,7 @@ export const EmailModal = ({ show, onClose, onSubmit }) => {
       }
 
       if (data.length === 0) {
-        setError('Aucune réservation trouvée pour cet email.');
+        setError('Aucune réservation trouvée pour cet email. Vérifiez que vous utilisez bien l\'email fourni lors de votre inscription.');
         return;
       }
 
@@ -77,7 +78,7 @@ export const EmailModal = ({ show, onClose, onSubmit }) => {
         />
       ) : (
         <div className="modal-content">
-          <h3>Voir mes réservations</h3>
+          <h3>Accéder à mes réservations</h3>
           <button 
             className="modal-close"
             onClick={onClose}
@@ -86,15 +87,25 @@ export const EmailModal = ({ show, onClose, onSubmit }) => {
             ×
           </button>
 
+          <div className="modal-description">
+            <p>
+              Pour consulter vos réservations en toute sécurité, veuillez saisir l'adresse email 
+              que vous avez utilisée lors de votre inscription.
+            </p>
+            <p className="info-text">
+              Vos informations sont protégées et accessibles uniquement avec votre email.
+            </p>
+          </div>
+
           <form onSubmit={handleSubmit}>
             <div className="form-group">
-              <label>Email utilisé lors de l'inscription</label>
+              <label>Votre email</label>
               <input
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                placeholder="Entrez votre email"
+                placeholder="exemple@email.com"
                 className="modal-input"
               />
             </div>
@@ -107,7 +118,7 @@ export const EmailModal = ({ show, onClose, onSubmit }) => {
               disabled={loading}
               fullWidth
             >
-              {loading ? 'Recherche...' : 'Rechercher'}
+              {loading ? 'Recherche...' : 'Consulter mes réservations'}
             </Button>
           </form>
         </div>
