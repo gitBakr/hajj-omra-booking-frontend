@@ -1,36 +1,50 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import './styles.css';
-import { useOffres } from '../../context/OffresContext';
+import { offresService } from '../../services/offresService';
 import OffreForm from './OffreForm';
 import OffreList from './OffreList';
 
 const AdminOffres = () => {
-  const { offres, addOffre, updateOffre, deleteOffre } = useOffres();
+  const [offres, setOffres] = useState({ hajj: [], omra: [] });
+
+  useEffect(() => {
+    loadOffres();
+  }, []);
+
+  const loadOffres = async () => {
+    try {
+      const data = await offresService.getOffres();
+      setOffres(data);
+    } catch (error) {
+      console.error('Erreur:', error);
+    }
+  };
 
   const handleSubmit = async (newOffer) => {
     try {
-      console.log('Envoi de la nouvelle offre:', newOffer);
-      await addOffre(newOffer);
-      console.log('Offre ajoutée avec succès');
+      await offresService.addOffre(newOffer);
+      await loadOffres(); // Recharger les offres
     } catch (error) {
-      console.error('Erreur lors de l\'ajout:', error);
+      console.error('Erreur:', error);
     }
   };
 
   const handleEdit = async (offre) => {
     try {
-      await updateOffre(offre);
+      await offresService.updateOffre(offre);
+      await loadOffres();
     } catch (error) {
-      console.error('Erreur lors de la modification:', error);
+      console.error('Erreur:', error);
     }
   };
 
   const handleDelete = async (id) => {
     if (window.confirm('Êtes-vous sûr de vouloir supprimer cette offre ?')) {
       try {
-        await deleteOffre(id);
+        await offresService.deleteOffre(id);
+        await loadOffres();
       } catch (error) {
-        console.error('Erreur lors de la suppression:', error);
+        console.error('Erreur:', error);
       }
     }
   };
