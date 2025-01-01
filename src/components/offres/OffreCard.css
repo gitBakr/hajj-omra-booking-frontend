@@ -1,0 +1,55 @@
+.offre-card {
+  position: relative;
+  background: #2a2a2a;
+  padding: 2rem;
+  border-radius: 15px;
+  border: 2px solid #DAA520;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.selection-indicator {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 2px solid #DAA520;
+  background: transparent;
+  transition: all 0.3s ease;
+}
+
+.offre-card.selected .selection-indicator {
+  background: #4CAF50;
+  border-color: #4CAF50;
+}
+
+.check-mark {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  font-size: 14px;
+}
+
+.offre-card:hover {
+  transform: translateY(-5px);
+}
+
+.offre-card.selected {
+  border-color: #4CAF50;
+}
+
+.offre-icon {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+.prix {
+  font-size: 1.5rem;
+  color: #DAA520;
+  margin-top: 1rem;
+} 

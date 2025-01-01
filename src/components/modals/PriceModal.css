@@ -1,0 +1,130 @@
+.price-details {
+  margin: 2rem 0;
+  padding: 1.5rem;
+  background: #f8f9fa;
+  border-radius: 12px;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.price-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 0;
+  border-bottom: 1px solid #e9ecef;
+  animation: priceSlideIn 0.4s ease-out forwards;
+  opacity: 0;
+  transform: translateX(-10px);
+}
+
+.price-item:last-child {
+  border-bottom: none;
+}
+
+.price-item span:first-child {
+  color: #4a5568;
+  font-size: 1.1rem;
+}
+
+.price-item span:last-child {
+  font-weight: 600;
+  color: #2d3436;
+  font-size: 1.2rem;
+}
+
+.price-total {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.2rem 0;
+  margin-top: 1rem;
+  border-top: 2px solid #e9ecef;
+  font-weight: bold;
+  animation: priceSlideIn 0.4s ease-out forwards;
+  animation-delay: 0.2s;
+  opacity: 0;
+  transform: translateX(-10px);
+}
+
+.price-total span:first-child {
+  color: #2d3436;
+  font-size: 1.3rem;
+}
+
+.price-total span:last-child {
+  color: #6c5ce7;
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+/* Animation pour les prix */
+.price-item {
+  animation: priceSlideIn 0.4s ease-out forwards;
+  opacity: 0;
+  transform: translateX(-10px);
+}
+
+.price-item:nth-child(2) {
+  animation-delay: 0.1s;
+}
+
+.price-total {
+  animation: priceSlideIn 0.4s ease-out forwards;
+  animation-delay: 0.2s;
+  opacity: 0;
+  transform: translateX(-10px);
+}
+
+@keyframes priceSlideIn {
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Réutilisation des styles de base des modals */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: white;
+  padding: 2rem;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 500px;
+  position: relative;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.modal-close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: #666;
+  cursor: pointer;
+  padding: 0.5rem;
+  line-height: 1;
+}
+
+.modal-close:hover {
+  color: #333;
+}
+
+.modal-content h3 {
+  margin: 0 0 1.5rem;
+  color: #333;
+  font-size: 1.5rem;
+} 

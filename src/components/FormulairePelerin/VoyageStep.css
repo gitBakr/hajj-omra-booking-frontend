@@ -1,0 +1,31 @@
+.voyage-card {
+  position: relative;
+  cursor: pointer;
+  /* ... autres styles existants ... */
+}
+
+.selection-indicator {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 2px solid #DAA520;
+  background: transparent;
+  transition: all 0.3s ease;
+}
+
+.voyage-card.selected .selection-indicator {
+  background: #4CAF50;
+  border-color: #4CAF50;
+}
+
+.check-mark {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  font-size: 14px;
+} 

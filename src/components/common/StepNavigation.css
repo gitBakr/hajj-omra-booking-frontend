@@ -1,0 +1,45 @@
+.step-navigation {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 1px solid #333;
+}
+
+.prev-button,
+.next-button,
+.submit-button {
+  padding: 12px 24px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  transition: all 0.3s;
+}
+
+.prev-button {
+  background: transparent;
+  color: #DAA520;
+  border: 2px solid #DAA520;
+}
+
+.next-button,
+.submit-button {
+  background: #DAA520;
+  color: #000;
+}
+
+.prev-button:hover {
+  background: rgba(218, 165, 32, 0.1);
+}
+
+.next-button:hover,
+.submit-button:hover:not(:disabled) {
+  background: #c69500;
+}
+
+.submit-button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  background: #666;
+} 

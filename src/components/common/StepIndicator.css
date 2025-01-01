@@ -1,0 +1,94 @@
+.step-indicator {
+  display: flex;
+  justify-content: space-between;
+  margin: 30px 0;
+  position: relative;
+  padding: 0 20px;
+}
+
+.step-indicator::before {
+  content: '';
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  right: 20px;
+  height: 2px;
+  background: #333;
+  z-index: 1;
+}
+
+.step {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #1a1a1a;
+  border: 2px solid #333;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  position: relative;
+  z-index: 2;
+  transition: all 0.3s ease;
+  color: #666;
+}
+
+.step.active {
+  background: #DAA520;
+  border-color: #DAA520;
+  color: #000;
+}
+
+.step.completed {
+  background: #1a1a1a;
+  border-color: #DAA520;
+  color: #DAA520;
+}
+
+.step-label {
+  position: absolute;
+  top: 45px;
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  color: #DAA520;
+  font-size: 0.9rem;
+}
+
+.progress-line {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  height: 2px;
+  background: #DAA520;
+  transition: width 0.3s ease;
+  z-index: 1;
+}
+
+@media (max-width: 768px) {
+  .step-label {
+    font-size: 0.8rem;
+  }
+
+  .step {
+    width: 35px;
+    height: 35px;
+  }
+}
+
+@media (max-width: 480px) {
+  .step-label {
+    display: none;
+  }
+
+  .step {
+    width: 30px;
+    height: 30px;
+    font-size: 0.9rem;
+  }
+
+  .step-indicator::before,
+  .progress-line {
+    top: 15px;
+  }
+} 

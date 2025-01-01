@@ -1,0 +1,137 @@
+.admin-dark {
+  background: #1a1a1a;
+  min-height: 100vh;
+  padding: 20px;
+  color: white;
+}
+
+.retour-btn {
+  background: #6c5ce7;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 25px;
+  cursor: pointer;
+  font-size: 16px;
+  margin-bottom: 20px;
+}
+
+.title {
+  color: #daa520;
+  text-align: center;
+  font-size: 2.5rem;
+  margin: 30px 0;
+}
+
+.type-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+.type-btn {
+  background: transparent;
+  color: #daa520;
+  border: 2px solid #daa520;
+  padding: 10px 30px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 18px;
+}
+
+.type-btn.active {
+  background: #daa520;
+  color: black;
+}
+
+.offre-form {
+  background: #2d2d2d;
+  padding: 20px;
+  border-radius: 10px;
+  margin-bottom: 30px;
+  display: grid;
+  gap: 15px;
+}
+
+.input-dark {
+  background: #3d3d3d;
+  border: none;
+  padding: 12px;
+  border-radius: 5px;
+  color: white;
+  font-size: 16px;
+}
+
+.btn-ajouter {
+  background: #4CAF50;
+  color: white;
+  border: none;
+  padding: 12px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.offres-list {
+  margin-top: 30px;
+}
+
+.section-title {
+  color: white;
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+.offre-item {
+  background: #2d2d2d;
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.offre-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex: 1;
+}
+
+.offre-titre {
+  color: white;
+  font-size: 18px;
+}
+
+.offre-prix {
+  color: #daa520;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.offre-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.btn-edit {
+  background: #4CAF50;
+  color: white;
+  border: none;
+  width: 30px;
+  height: 30px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.btn-delete {
+  background: #ff4444;
+  color: white;
+  border: none;
+  width: 30px;
+  height: 30px;
+  border-radius: 5px;
+  cursor: pointer;
+} 

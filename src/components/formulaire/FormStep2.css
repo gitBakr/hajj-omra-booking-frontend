@@ -1,0 +1,147 @@
+.form-step {
+  padding: 1rem;
+}
+
+.step-content {
+  background: #1a1a1a;
+  border-radius: 15px;
+  padding: 2rem;
+  color: #DAA520;
+  border: 1px solid #DAA520;
+}
+
+.step-title {
+  font-size: 1.8rem;
+  margin: 0 0 2rem;
+  text-align: center;
+  position: relative;
+  padding-bottom: 1rem;
+  color: #DAA520 !important;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 600;
+}
+
+.step-title::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100px;
+  height: 2px;
+  background: #DAA520;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.form-group label {
+  color: #DAA520 !important;
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  display: block;
+}
+
+.form-group input,
+.form-group select {
+  background: #2a2a2a;
+  border: 1px solid #DAA520;
+  padding: 0.8rem 1rem;
+  border-radius: 8px;
+  color: #DAA520;
+  font-size: 1rem;
+  width: 100%;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: #DAA520;
+  box-shadow: 0 0 0 2px rgba(218, 165, 32, 0.1);
+  background: #333;
+}
+
+.form-group input::placeholder {
+  color: #666;
+}
+
+.form-group select {
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23DAA520' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  background-size: 1em;
+  padding-right: 2.5rem;
+}
+
+.form-group select option:first-child {
+  color: #666;
+}
+
+.form-group select option {
+  background: #2a2a2a;
+  color: #DAA520;
+  padding: 0.5rem;
+}
+
+/* Animation d'entrée */
+.form-group {
+  opacity: 0;
+  transform: translateY(10px);
+  animation: fadeInUp 0.5s forwards;
+}
+
+@keyframes fadeInUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Animation décalée pour chaque champ */
+.form-group:nth-child(1) { animation-delay: 0.1s; }
+.form-group:nth-child(2) { animation-delay: 0.2s; }
+.form-group:nth-child(3) { animation-delay: 0.3s; }
+.form-group:nth-child(4) { animation-delay: 0.4s; }
+.form-group:nth-child(5) { animation-delay: 0.5s; }
+.form-group:nth-child(6) { animation-delay: 0.6s; }
+
+@media (max-width: 768px) {
+  .form-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .step-content {
+    padding: 1.5rem;
+  }
+
+  .step-title {
+    font-size: 1.5rem;
+  }
+
+  .form-group input,
+  .form-group select {
+    padding: 0.7rem;
+    font-size: 0.95rem;
+  }
+}
+
+.form-step-informations .form-group label {
+  color: #DAA520 !important;
+  /* ... autres styles ... */
+} 

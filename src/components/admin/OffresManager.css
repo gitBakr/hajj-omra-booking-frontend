@@ -1,0 +1,237 @@
+.offres-manager {
+  background: #1a1a1a;
+  min-height: 100vh;
+  padding: 20px;
+  color: #DAA520;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.offres-manager h1 {
+  color: #DAA520;
+  text-align: center;
+  margin-bottom: 2rem;
+  font-size: 2.2rem;
+  position: relative;
+  padding-bottom: 1rem;
+}
+
+.offres-manager h1::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100px;
+  height: 3px;
+  background: #DAA520;
+}
+
+.form-section {
+  background: #2a2a2a;
+  padding: 2rem;
+  border-radius: 15px;
+  margin-bottom: 2rem;
+  border: 1px solid #DAA520;
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-group label {
+  display: block;
+  color: #DAA520;
+  margin-bottom: 0.5rem;
+  font-size: 1.1rem;
+}
+
+.form-input {
+  width: 100%;
+  padding: 0.8rem;
+  background: #1a1a1a;
+  border: 1px solid #DAA520;
+  border-radius: 8px;
+  color: #fff;
+  font-size: 1rem;
+}
+
+.form-input:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(218, 165, 32, 0.2);
+}
+
+.form-actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.submit-btn {
+  padding: 0.8rem 2rem;
+  background: #DAA520;
+  color: #000;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.submit-btn:hover {
+  background: #c69500;
+}
+
+.cancel-btn {
+  padding: 0.8rem 2rem;
+  background: transparent;
+  color: #DAA520;
+  border: 2px solid #DAA520;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.cancel-btn:hover {
+  background: rgba(218, 165, 32, 0.1);
+}
+
+.offres-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.offre-card {
+  background: #2a2a2a;
+  padding: 1.5rem;
+  border-radius: 12px;
+  border: 1px solid #DAA520;
+  transition: transform 0.3s ease;
+}
+
+.offre-card:hover {
+  transform: translateY(-5px);
+}
+
+.offre-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.offre-header h3 {
+  color: #DAA520;
+  margin: 0;
+  font-size: 1.2rem;
+}
+
+.offre-prix {
+  font-size: 1.5rem;
+  color: #fff;
+  margin: 1rem 0;
+}
+
+.offre-actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.edit-btn, .delete-btn {
+  padding: 0.6rem 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+  flex: 1;
+}
+
+.edit-btn {
+  background: #DAA520;
+  color: #000;
+  border: none;
+}
+
+.edit-btn:hover {
+  background: #c69500;
+}
+
+.delete-btn {
+  background: transparent;
+  color: #ff4444;
+  border: 2px solid #ff4444;
+}
+
+.delete-btn:hover {
+  background: rgba(255, 68, 68, 0.1);
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .offres-manager {
+    padding: 15px;
+  }
+
+  .form-section {
+    padding: 1.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .offres-manager h1 {
+    font-size: 1.8rem;
+  }
+
+  .admin-header {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .form-actions {
+    flex-direction: column;
+  }
+
+  .submit-btn, .cancel-btn {
+    width: 100%;
+  }
+
+  .offres-grid {
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  }
+}
+
+@media (max-width: 480px) {
+  .offres-manager {
+    padding: 10px;
+  }
+
+  .offres-manager h1 {
+    font-size: 1.5rem;
+  }
+
+  .form-section {
+    padding: 1rem;
+  }
+
+  .offres-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .offre-header {
+    flex-direction: column;
+    text-align: center;
+    gap: 0.5rem;
+  }
+
+  .offre-prix {
+    text-align: center;
+  }
+
+  .offre-actions {
+    flex-direction: column;
+  }
+} 

@@ -1,0 +1,115 @@
+.form-step {
+  padding: 1rem;
+}
+
+.step-content {
+  background: #1a1a1a;
+  border-radius: 15px;
+  padding: 2rem;
+  color: #DAA520;
+  border: 1px solid #DAA520;
+}
+
+.step-title {
+  font-size: 1.8rem;
+  margin: 0 0 2rem;
+  text-align: center;
+  position: relative;
+  padding-bottom: 1rem;
+}
+
+.step-title::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100px;
+  height: 2px;
+  background: #DAA520;
+}
+
+.offre-type {
+  font-size: 1.4rem;
+  margin: 2rem 0 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.offres-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.offre-item {
+  background: #2a2a2a;
+  padding: 1rem 1.5rem;
+  border-radius: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 1px solid transparent;
+  position: relative;
+}
+
+.offre-item:hover {
+  border-color: #DAA520;
+  transform: translateX(5px);
+}
+
+.offre-item.selected {
+  border-color: #DAA520;
+  background: #333;
+}
+
+.offre-titre {
+  flex: 1;
+  font-size: 1.2rem;
+  color: white;
+}
+
+.offre-prix {
+  margin: 0;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #DAA520;
+}
+
+.loading {
+  text-align: center;
+  padding: 2rem;
+  color: #DAA520;
+}
+
+.no-offres {
+  text-align: center;
+  color: #999;
+  padding: 1rem;
+}
+
+@media (max-width: 768px) {
+  .step-content {
+    padding: 1.5rem;
+  }
+
+  .step-title {
+    font-size: 1.5rem;
+  }
+
+  .offre-type {
+    font-size: 1.2rem;
+  }
+
+  .offre-item {
+    grid-template-columns: 1fr auto;
+    padding: 0.8rem 1rem;
+  }
+
+  .offre-prix {
+    margin-right: 0;
+  }
+} 

@@ -1,0 +1,124 @@
+.form-step {
+  padding: 1rem;
+}
+
+.step-content {
+  background: #1a1a1a;
+  border-radius: 15px;
+  padding: 2rem;
+  color: #DAA520;
+  border: 1px solid #DAA520;
+}
+
+.step-title {
+  font-size: 1.8rem;
+  margin: 0 0 2rem;
+  text-align: center;
+  position: relative;
+  padding-bottom: 1rem;
+  color: #DAA520 !important;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 600;
+}
+
+.step-title::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100px;
+  height: 2px;
+  background: #DAA520;
+}
+
+.chambres-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+}
+
+.chambre-option {
+  background: #2a2a2a;
+  border: 1px solid #333;
+  border-radius: 12px;
+  padding: 1.5rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeInUp 0.5s forwards;
+}
+
+.chambre-option:hover {
+  border-color: #DAA520;
+  transform: translateY(-5px);
+}
+
+.chambre-option.selected {
+  border-color: #DAA520;
+  background: #333;
+  box-shadow: 0 0 0 2px rgba(218, 165, 32, 0.1);
+}
+
+.chambre-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.chambre-header h3 {
+  color: #DAA520;
+  font-size: 1.2rem;
+  margin: 0;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.supplement {
+  background: rgba(218, 165, 32, 0.1);
+  color: #DAA520;
+  padding: 0.3rem 0.8rem;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.chambre-description {
+  color: #999;
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+/* Animation décalée pour chaque option */
+.chambre-option:nth-child(1) { animation-delay: 0.1s; }
+.chambre-option:nth-child(2) { animation-delay: 0.2s; }
+.chambre-option:nth-child(3) { animation-delay: 0.3s; }
+
+@keyframes fadeInUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 768px) {
+  .step-content {
+    padding: 1.5rem;
+  }
+
+  .step-title {
+    font-size: 1.5rem;
+  }
+
+  .chambre-option {
+    padding: 1.2rem;
+  }
+
+  .chambre-header h3 {
+    font-size: 1.1rem;
+  }
+} 
