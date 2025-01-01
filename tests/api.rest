@@ -153,50 +153,36 @@ Content-Type: application/json
 ###################
 
 ### Créer une offre Hajj
-POST {{baseUrl}}/offres
+POST https://hajj-omra-booking-backend.onrender.com/offres
 Content-Type: application/json
 
 {
     "email": "raouanedev@gmail.com",
-    "type": "hajj",
     "titre": "HAJJ 2024 - Pack Premium",
-    "prix": 6990,
+    "prix": 8500,
+    "type": "hajj",
     "description": "Voyage tout inclus pour le HAJJ 2024",
-    "dateDepart": "2024-06-01",
-    "prestations": {
-        "transport": "Bus climatisé + Vols internationaux",
-        "hebergement": "Hôtels 5★",
-        "restauration": "Pension complète",
-        "guide": "Guide francophone",
-        "visa": "Visa Hajj inclus"
-    }
+    "dateDepart": "2024-06-01"
 }
 
 ### Créer une offre Omra
-POST {{baseUrl}}/offres
+POST https://hajj-omra-booking-backend.onrender.com/offres
 Content-Type: application/json
 
 {
     "email": "raouanedev@gmail.com",
-    "type": "omra",
     "titre": "OMRA RAMADAN 2024",
-    "prix": 1490,
+    "prix": 4500,
+    "type": "omra",
     "description": "Voyage tout inclus pour l'OMRA 2024",
-    "dateDepart": "2024-03-15",
-    "prestations": {
-        "transport": "Bus climatisé + Vols internationaux",
-        "hebergement": "Hôtels 4★",
-        "restauration": "Pension complète",
-        "guide": "Guide francophone",
-        "visa": "Visa Omra inclus"
-    }
+    "dateDepart": "2024-03-15"
 }
 
 ### Voir toutes les offres
-GET {{baseUrl}}/offres
+GET https://hajj-omra-booking-backend.onrender.com/offres
 
-### Supprimer une offre (remplacer ID)
-DELETE {{baseUrl}}/offres/ID_DE_L_OFFRE
+### Supprimer une offre
+DELETE https://hajj-omra-booking-backend.onrender.com/offres/67748a9dd9386f8899b685e8
 Content-Type: application/json
 
 {
