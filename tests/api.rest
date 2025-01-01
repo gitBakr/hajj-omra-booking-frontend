@@ -2,6 +2,10 @@
 @baseUrl = https://hajj-omra-booking-backend.onrender.com
 @adminEmail = raouanedev@gmail.com
 
+###################
+### PÈLERINS
+###################
+
 ### 1. Créer un nouveau pèlerin
 POST {{baseUrl}}/pelerin
 Content-Type: application/json
@@ -142,4 +146,69 @@ Content-Type: application/json
 
 {
   "email": "{{adminEmail}}"
+}
+
+###################
+### OFFRES
+###################
+
+### Créer une offre Hajj
+POST {{baseUrl}}/offres
+Content-Type: application/json
+
+{
+    "email": "raouanedev@gmail.com",
+    "type": "hajj",
+    "titre": "HAJJ 2024 - Pack Premium",
+    "prix": 6990,
+    "description": "Voyage tout inclus pour le HAJJ 2024",
+    "dateDepart": "2024-06-01",
+    "prestations": {
+        "transport": "Bus climatisé + Vols internationaux",
+        "hebergement": "Hôtels 5★",
+        "restauration": "Pension complète",
+        "guide": "Guide francophone",
+        "visa": "Visa Hajj inclus"
+    }
+}
+
+### Créer une offre Omra
+POST {{baseUrl}}/offres
+Content-Type: application/json
+
+{
+    "email": "raouanedev@gmail.com",
+    "type": "omra",
+    "titre": "OMRA RAMADAN 2024",
+    "prix": 1490,
+    "description": "Voyage tout inclus pour l'OMRA 2024",
+    "dateDepart": "2024-03-15",
+    "prestations": {
+        "transport": "Bus climatisé + Vols internationaux",
+        "hebergement": "Hôtels 4★",
+        "restauration": "Pension complète",
+        "guide": "Guide francophone",
+        "visa": "Visa Omra inclus"
+    }
+}
+
+### Voir toutes les offres
+GET {{baseUrl}}/offres
+
+### Supprimer une offre (remplacer ID)
+DELETE {{baseUrl}}/offres/ID_DE_L_OFFRE
+Content-Type: application/json
+
+{
+    "email": "raouanedev@gmail.com"
+}
+
+### Modifier une offre (remplacer ID)
+PUT {{baseUrl}}/offres/ID_DE_L_OFFRE
+Content-Type: application/json
+
+{
+    "email": "raouanedev@gmail.com",
+    "titre": "HAJJ 2024 - Pack VIP",
+    "prix": 7990
 } 

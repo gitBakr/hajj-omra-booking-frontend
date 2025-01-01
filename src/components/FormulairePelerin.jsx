@@ -3,10 +3,9 @@ import PropTypes from 'prop-types';
 import './FormulairePelerin.css';
 import MesReservations from './MesReservations';
 import emailjs from '@emailjs/browser';
+import { useOffres } from '../context/OffresContext';
 
-const API_URL = process.env.NODE_ENV === 'development' 
-  ? "http://localhost:5000/pelerin"  // URL locale avec port 5000
-  : "https://hajj-omra-booking-backend.onrender.com/pelerin"; // URL production
+const API_URL = "https://hajj-omra-booking-backend.onrender.com/pelerin";
 const isDev = process.env.NODE_ENV === 'development';
 
 // Ajouter ces constantes pour EmailJS
@@ -18,6 +17,8 @@ const FormulairePelerin = ({
   onRetour = () => window.location.href = '/',
   packType = 'hajj' 
 }) => {
+  const { offres } = useOffres();
+
   // Vérification des props avec valeur par défaut pour onRetour
   const handleRetour = () => {
     if (typeof onRetour === 'function') {
@@ -58,6 +59,7 @@ const FormulairePelerin = ({
         typePelerinage: 'hajj',
         dateDepart: 'Du 01 Mai au 20 Juin 2025',
         besoinsSpeciaux: '',
+        offreId: '',
         chambre: {
           type: 'quadruple',
           supplement: 0
@@ -191,17 +193,22 @@ const FormulairePelerin = ({
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Accept': 'application/json'
         },
-        body: JSON.stringify(donnees)
+        mode: 'cors',
+        credentials: 'include',
+        body: JSON.stringify({
+          ...donnees,
+          email: 'raouanedev@gmail.com'
+        })
       });
 
-      const resultat = await response.json();
-
-      // Vérifier si la réponse contient une erreur
       if (!response.ok) {
-        throw new Error(resultat.message || `Erreur HTTP: ${response.status}`);
+        const error = await response.json();
+        throw new Error(error.message || `Erreur HTTP: ${response.status}`);
       }
 
+      const resultat = await response.json();
       console.log('✅ Données envoyées avec succès:', resultat);
       return resultat;
 
@@ -509,6 +516,13 @@ const FormulairePelerin = ({
     }
   };
 
+  // Ajouter ces logs
+  useEffect(() => {
+    console.log('Offres disponibles:', offres);
+    console.log('Offres Hajj:', offres.hajj);
+    console.log('Offres Omra:', offres.omra);
+  }, [offres]);
+
   if (showReservations) {
     return <MesReservations 
       onRetour={() => {
@@ -602,16 +616,75 @@ const FormulairePelerin = ({
               <div className="form-section">
                 <div className="section-title">
                   <h3>1. Choix du voyage</h3>
-                  <p className="section-subtitle">Sélectionnez votre type de pèlerinage</p>
                 </div>
-                <select
-                  value={formulaire.data.typePelerinage}
-                  onChange={(e) => handleChange(formulaire.id, 'typePelerinage', e.target.value)}
-                  className="voyage-select"
-                >
-                  <option value="hajj">🕋 HAJJ 2025</option>
-                  <option value="omra">🌙 OMRA RAMADAN</option>
-                </select>
+
+                <div className="voyage-selection">
+                  <div className="voyage-type">
+                    <h4>🕋 Offres Hajj</h4>
+                    <div className="voyage-buttons">
+                      {offres.hajj.map(offre => (
+                        <button 
+                          key={offre._id}
+                          className={`voyage-btn ${formulaire.data.offreId === String(offre._id) ? 'selected' : ''}`}
+                          onClick={() => {
+                            setFormulaires(prevFormulaires => 
+                              prevFormulaires.map(form => {
+                                if (form.id === formulaire.id) {
+                                  return {
+                                    ...form,
+                                    data: {
+                                      ...form.data,
+                                      offreId: String(offre._id),
+                                      typePelerinage: offre.type,
+                                      dateDepart: 'Du 01 Mai au 20 Juin 2025'
+                                    }
+                                  };
+                                }
+                                return form;
+                              })
+                            );
+                          }}
+                        >
+                          <span className="voyage-titre">{offre.titre}</span>
+                          <span className="voyage-prix">{offre.prix}€</span>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="voyage-type">
+                    <h4>🌙 Offres Omra</h4>
+                    <div className="voyage-buttons">
+                      {offres.omra.map(offre => (
+                        <button 
+                          key={offre._id}
+                          className={`voyage-btn ${formulaire.data.offreId === String(offre._id) ? 'selected' : ''}`}
+                          onClick={() => {
+                            setFormulaires(prevFormulaires => 
+                              prevFormulaires.map(form => {
+                                if (form.id === formulaire.id) {
+                                  return {
+                                    ...form,
+                                    data: {
+                                      ...form.data,
+                                      offreId: String(offre._id),
+                                      typePelerinage: offre.type,
+                                      dateDepart: 'Du 15 Mars au 05 Avril 2025'
+                                    }
+                                  };
+                                }
+                                return form;
+                              })
+                            );
+                          }}
+                        >
+                          <span className="voyage-titre">{offre.titre}</span>
+                          <span className="voyage-prix">{offre.prix}€</span>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
               </div>
             )}
 
