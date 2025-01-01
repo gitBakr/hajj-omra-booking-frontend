@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import './FormulairePelerin.css';
 import MesReservations from './MesReservations';
 import emailjs from '@emailjs/browser';
-import { useOffres } from '../context/OffresContext';
+import { offresService } from '../services/offresService';
 
 const API_URL = "https://hajj-omra-booking-backend.onrender.com/pelerin";
 const isDev = process.env.NODE_ENV === 'development';
@@ -17,7 +17,21 @@ const FormulairePelerin = ({
   onRetour = () => window.location.href = '/',
   packType = 'hajj' 
 }) => {
-  const { offres } = useOffres();
+  const [offres, setOffres] = useState({ hajj: [], omra: [] });
+  
+  // Charger les offres au montage du composant
+  useEffect(() => {
+    const loadOffres = async () => {
+      try {
+        const data = await offresService.getOffres();
+        setOffres(data);
+      } catch (error) {
+        console.error('Erreur lors du chargement des offres:', error);
+      }
+    };
+    
+    loadOffres();
+  }, []);
 
   // Vérification des props avec valeur par défaut pour onRetour
   const handleRetour = () => {
