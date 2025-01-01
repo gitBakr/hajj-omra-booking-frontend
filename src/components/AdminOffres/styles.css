@@ -1,0 +1,177 @@
+/* Style pour le conteneur principal */
+.admin-offres {
+  padding: 20px;
+  color: #fff;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.admin-offres h2 {
+  color: #DAA520;
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+/* Style pour le formulaire */
+.offer-form-container {
+  margin-bottom: 20px;
+}
+
+.type-buttons {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.type-btn {
+  padding: 8px 20px;
+  border: 2px solid #DAA520;
+  border-radius: 4px;
+  background: transparent;
+  color: #DAA520;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.type-btn:hover {
+  background: rgba(218, 165, 32, 0.1);
+}
+
+.type-btn.selected {
+  background: #DAA520;
+  color: white;
+}
+
+.offer-form {
+  display: flex;
+  gap: 10px;
+  background: #383838;
+  padding: 15px;
+  border-radius: 6px;
+}
+
+.offer-form input {
+  padding: 8px 12px;
+  border-radius: 4px;
+  border: 1px solid #555;
+  background: #2d2d2d;
+  color: white;
+  flex: 1;
+}
+
+.offer-form button {
+  background: #DAA520;
+  color: white;
+  border: none;
+  padding: 8px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.offer-form button:disabled {
+  background: #666;
+  cursor: not-allowed;
+}
+
+.offer-form button:not(:disabled):hover {
+  background: #c69500;
+}
+
+/* Style pour la liste des offres */
+.offers-section {
+  margin: 20px 0;
+}
+
+.offers-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 10px;
+}
+
+/* Style pour chaque offre */
+.offer-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #2d2d2d;
+  padding: 10px 15px;
+  border-radius: 6px;
+  border: 1px solid #444;
+  transition: all 0.2s ease;
+}
+
+.offer-item:hover {
+  border-color: #DAA520;
+  background: #333;
+}
+
+.offer-content {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.offer-title {
+  font-weight: 500;
+  color: #fff;
+}
+
+.offer-price {
+  color: #DAA520;
+  font-weight: bold;
+}
+
+/* Style pour les boutons d'action */
+.offer-actions {
+  display: flex;
+  gap: 5px;
+}
+
+.edit-btn,
+.delete-btn {
+  padding: 5px 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s ease;
+}
+
+.edit-btn {
+  background: #4CAF50;
+  color: white;
+}
+
+.edit-btn:hover {
+  background: #45a049;
+}
+
+.delete-btn {
+  background: #f44336;
+  color: white;
+}
+
+.delete-btn:hover {
+  background: #da190b;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .admin-offres {
+    padding: 10px;
+  }
+
+  .offer-form {
+    flex-direction: column;
+  }
+  
+  .type-buttons {
+    justify-content: center;
+  }
+
+  .offers-grid {
+    grid-template-columns: 1fr;
+  }
+} 

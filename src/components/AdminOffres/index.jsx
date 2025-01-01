@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import './styles.css';
 import { offresService } from '../../services/offresService';
 import OffreForm from './OffreForm';
 import OffreList from './OffreList';
+import './styles.css';
 
 const AdminOffres = () => {
   const [offres, setOffres] = useState({ hajj: [], omra: [] });
