@@ -8,7 +8,7 @@ const EMAILJS_SERVICE_ID = 'service_izw1pma';
 const EMAILJS_TEMPLATE_ID = 'template_bqkl86r';
 const EMAILJS_PUBLIC_KEY = 'ktYqhkd2pNkTEmsbp';
 
-export const useFormulairePelerin = (packType) => {
+export const useFormulairePelerin = (setCurrentStep) => {
   const [offres, setOffres] = useState({ hajj: [], omra: [] });
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState({ type: '', text: '' });
@@ -185,6 +185,7 @@ export const useFormulairePelerin = (packType) => {
                Vous pouvez consulter votre réservation à tout moment avec votre email.`
       });
 
+      // Réinitialiser le formulaire
       setFormulaires([{
         id: 1,
         civilite: '',
@@ -194,13 +195,25 @@ export const useFormulairePelerin = (packType) => {
         telephone: '',
         email: '',
         chambre: null,
-        offre: null
+        offre: null,
+        complements: []
       }]);
 
+      // Retour à l'étape 1
+      if (typeof setCurrentStep === 'function') {
+        setCurrentStep(1);
+      }
+
+      // Scroll en haut
       window.scrollTo({
         top: 0,
         behavior: 'smooth'
       });
+
+      // Attendre 10 secondes avant de rediriger
+      setTimeout(() => {
+        window.location.href = '/';
+      }, 10000); // 10000 ms = 10 secondes
 
     } catch (error) {
       console.error('❌ Erreur détaillée:', error);

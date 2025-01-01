@@ -62,7 +62,7 @@ const FormulairePelerin = ({ onRetour, packType }) => {
     handleSubmit,
     handleOffreSelect,
     searchReservations
-  } = useFormulairePelerin(packType);
+  } = useFormulairePelerin(setCurrentStep);
 
   const validateStep1 = () => {
     return formulaires[0]?.offre !== null;
