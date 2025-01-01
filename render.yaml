@@ -1,20 +1,9 @@
 services:
   - type: web
-    name: hajj-omra-booking-api
-    env: node
-    buildCommand: cd backend && npm install
-    startCommand: cd backend && node server.js
-    envVars:
-      - key: MONGODB_URI
-        sync: false
-      - key: PORT
-        value: 5001
-
-  - type: static
-    name: hajj-omra-booking-frontend
-    rootDir: frontend
+    name: hajj-frontend
+    env: static
     buildCommand: npm install && npm run build
-    publishDir: dist
+    staticPublishPath: ./dist
     envVars:
       - key: VITE_API_URL
-        value: https://hajj-omra-booking-api.onrender.com 
+        value: "https://hajj-omra-booking-backend.onrender.com" 

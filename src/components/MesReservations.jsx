@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import AdminOffres from './AdminOffres';
 import './MesReservations.css';
 
 const API_URL = 'https://hajj-omra-booking-backend.onrender.com/pelerin';
@@ -13,6 +14,7 @@ const MesReservations = ({ onRetour, email }) => {
   const [reservations, setReservations] = useState(null);
   const [isAdmin, setIsAdmin] = useState(false);
   const [error, setError] = useState(null);
+  const [activeSection, setActiveSection] = useState('reservations');
 
   // Fonction de calcul des chambres
   const calculerNombreChambres = () => {
@@ -43,10 +45,13 @@ const MesReservations = ({ onRetour, email }) => {
   useEffect(() => {
     const fetchReservations = async () => {
       try {
+        console.log('Fetching reservations for email:', email); // Log pour debug
         const response = await fetch(`${API_URL}/search?email=${email}`, {
           headers: {
             'Accept': 'application/json'
-          }
+          },
+          mode: 'cors',
+          credentials: 'include'
         });
 
         if (!response.ok) {
@@ -58,10 +63,11 @@ const MesReservations = ({ onRetour, email }) => {
 
         // Vérifier si c'est l'admin
         if (email === ADMIN_EMAIL) {
+          console.log('Admin detected!'); // Log pour debug
           setIsAdmin(true);
-          // Charger les stats pour l'admin...
         }
       } catch (error) {
+        console.error('Error fetching reservations:', error);
         setError(error.message);
       }
     };
@@ -71,16 +77,40 @@ const MesReservations = ({ onRetour, email }) => {
     }
   }, [email]);
 
+  // Ajouter un log pour voir quand le rendu se fait
+  console.log('Current state:', { isAdmin, activeSection });
+
   return (
     <div className="reservations-container">
       <div className="reservations-header">
         <h2>
-          {isAdmin ? 'Panel Administrateur - Toutes les Réservations' : 'Mes Réservations'}
+          {isAdmin ? 'Panel Administrateur' : 'Mes Réservations'}
         </h2>
         <button className="retour-btn" onClick={onRetour}>
           ← Retour au formulaire
         </button>
       </div>
+
+      {/* Ajouter un log conditionnel */}
+      {isAdmin && console.log('Rendering admin navigation')}
+
+      {/* Menu de navigation admin */}
+      {isAdmin && (
+        <div className="admin-nav">
+          <button 
+            className={`nav-btn ${activeSection === 'reservations' ? 'active' : ''}`}
+            onClick={() => setActiveSection('reservations')}
+          >
+            Réservations
+          </button>
+          <button 
+            className={`nav-btn ${activeSection === 'offres' ? 'active' : ''}`}
+            onClick={() => setActiveSection('offres')}
+          >
+            Gestion des Offres
+          </button>
+        </div>
+      )}
 
       {error && (
         <div className="error-message">
@@ -88,10 +118,12 @@ const MesReservations = ({ onRetour, email }) => {
         </div>
       )}
 
-      {/* Afficher directement les résultats si on a un email */}
-      {reservations && (
+      {/* Afficher la section active */}
+      {isAdmin && activeSection === 'offres' ? (
+        <AdminOffres />
+      ) : (
         <div className="reservations-results">
-          {reservations.length > 0 ? (
+          {reservations && (
             <div className="reservations-list">
               {isAdmin && (
                 <div className="admin-stats">
@@ -142,10 +174,6 @@ const MesReservations = ({ onRetour, email }) => {
                   </div>
                 </div>
               ))}
-            </div>
-          ) : (
-            <div className="no-reservations">
-              <p>Aucune réservation trouvée.</p>
             </div>
           )}
         </div>

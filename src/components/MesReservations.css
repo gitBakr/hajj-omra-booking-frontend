@@ -277,4 +277,41 @@
   .reservation-card {
     padding: 15px;
   }
+}
+
+.admin-nav {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 30px;
+  padding: 0 20px;
+}
+
+.nav-btn {
+  padding: 10px 20px;
+  border: 2px solid #DAA520;
+  background: transparent;
+  color: #DAA520;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.nav-btn:hover {
+  background: rgba(218, 165, 32, 0.1);
+}
+
+.nav-btn.active {
+  background: #DAA520;
+  color: #fff;
+}
+
+@media screen and (max-width: 768px) {
+  .admin-nav {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .nav-btn {
+    width: 100%;
+  }
 } 

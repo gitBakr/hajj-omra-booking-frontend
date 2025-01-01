@@ -2,8 +2,19 @@ import React, { createContext, useState, useContext, useEffect } from 'react';
 
 const API_URL = "https://hajj-omra-booking-backend.onrender.com";
 
+// Créer le contexte
 const OffresContext = createContext();
 
+// Hook personnalisé pour utiliser le contexte
+export const useOffres = () => {
+  const context = useContext(OffresContext);
+  if (!context) {
+    throw new Error('useOffres doit être utilisé à l\'intérieur d\'un OffresProvider');
+  }
+  return context;
+};
+
+// Provider component
 export const OffresProvider = ({ children }) => {
   const [offres, setOffres] = useState({
     hajj: [],
@@ -171,10 +182,8 @@ export const OffresProvider = ({ children }) => {
   };
 
   return (
-    <OffresContext.Provider value={{ offres, setOffres, addOffre, updateOffre, deleteOffre }}>
+    <OffresContext.Provider value={{ offres, addOffre, updateOffre, deleteOffre }}>
       {children}
     </OffresContext.Provider>
   );
-};
-
-export const useOffres = () => useContext(OffresContext); 
+}; 

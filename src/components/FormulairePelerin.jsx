@@ -18,19 +18,32 @@ const FormulairePelerin = ({
   packType = 'hajj' 
 }) => {
   const [offres, setOffres] = useState({ hajj: [], omra: [] });
+  const [loading, setLoading] = useState(true);
   
   // Charger les offres au montage du composant
   useEffect(() => {
+    let mounted = true;
+
     const loadOffres = async () => {
       try {
+        setLoading(true);
         const data = await offresService.getOffres();
+        if (mounted) {
+          console.log('Données chargées:', data);
         setOffres(data);
+        }
       } catch (error) {
-        console.error('Erreur lors du chargement des offres:', error);
+        console.error('Erreur chargement:', error);
+      } finally {
+        if (mounted) setLoading(false);
       }
     };
     
     loadOffres();
+
+    return () => {
+      mounted = false;
+    };
   }, []);
 
   // Vérification des props avec valeur par défaut pour onRetour
@@ -82,7 +95,6 @@ const FormulairePelerin = ({
     }
   ]);
   const [message, setMessage] = useState({ type: '', text: '' });
-  const [loading, setLoading] = useState(false);
   const formRef = useRef(null);
   const [showReservations, setShowReservations] = useState(false);
   const [personnes, setPersonnes] = useState([]);
@@ -632,73 +644,80 @@ const FormulairePelerin = ({
                   <h3>1. Choix du voyage</h3>
                 </div>
 
-                <div className="voyage-selection">
-                  <div className="voyage-type">
-                    <h4>🕋 Offres Hajj</h4>
-                    <div className="voyage-buttons">
-                      {offres.hajj.map(offre => (
-                        <button 
-                          key={offre._id}
-                          className={`voyage-btn ${formulaire.data.offreId === String(offre._id) ? 'selected' : ''}`}
-                          onClick={() => {
-                            setFormulaires(prevFormulaires => 
-                              prevFormulaires.map(form => {
-                                if (form.id === formulaire.id) {
-                                  return {
-                                    ...form,
-                                    data: {
-                                      ...form.data,
-                                      offreId: String(offre._id),
-                                      typePelerinage: offre.type,
-                                      dateDepart: 'Du 01 Mai au 20 Juin 2025'
-                                    }
-                                  };
-                                }
-                                return form;
-                              })
-                            );
-                          }}
-                        >
-                          <span className="voyage-titre">{offre.titre}</span>
-                          <span className="voyage-prix">{offre.prix}€</span>
-                        </button>
-                      ))}
-                    </div>
+                {loading ? (
+                  <div className="loading-container">
+                    <div className="loading-spinner"></div>
+                    <p>Chargement des offres...</p>
                   </div>
+                ) : (
+                  <div className="voyage-selection">
+                    <div className="voyage-type">
+                      <h4>🕋 Offres Hajj</h4>
+                      <div className="voyage-buttons">
+                        {offres.hajj.map(offre => (
+                          <button 
+                            key={offre._id}
+                            className={`voyage-btn ${formulaire.data.offreId === String(offre._id) ? 'selected' : ''}`}
+                            onClick={() => {
+                              setFormulaires(prevFormulaires => 
+                                prevFormulaires.map(form => {
+                                  if (form.id === formulaire.id) {
+                                    return {
+                                      ...form,
+                                      data: {
+                                        ...form.data,
+                                        offreId: String(offre._id),
+                                        typePelerinage: offre.type,
+                                        dateDepart: 'Du 01 Mai au 20 Juin 2025'
+                                      }
+                                    };
+                                  }
+                                  return form;
+                                })
+                              );
+                            }}
+                          >
+                            <span className="voyage-titre">{offre.titre}</span>
+                            <span className="voyage-prix">{offre.prix}€</span>
+                          </button>
+                        ))}
+                      </div>
+                    </div>
 
-                  <div className="voyage-type">
-                    <h4>🌙 Offres Omra</h4>
-                    <div className="voyage-buttons">
-                      {offres.omra.map(offre => (
-                        <button 
-                          key={offre._id}
-                          className={`voyage-btn ${formulaire.data.offreId === String(offre._id) ? 'selected' : ''}`}
-                          onClick={() => {
-                            setFormulaires(prevFormulaires => 
-                              prevFormulaires.map(form => {
-                                if (form.id === formulaire.id) {
-                                  return {
-                                    ...form,
-                                    data: {
-                                      ...form.data,
-                                      offreId: String(offre._id),
-                                      typePelerinage: offre.type,
-                                      dateDepart: 'Du 15 Mars au 05 Avril 2025'
-                                    }
-                                  };
-                                }
-                                return form;
-                              })
-                            );
-                          }}
-                        >
-                          <span className="voyage-titre">{offre.titre}</span>
-                          <span className="voyage-prix">{offre.prix}€</span>
-                        </button>
-                      ))}
+                    <div className="voyage-type">
+                      <h4>🌙 Offres Omra</h4>
+                      <div className="voyage-buttons">
+                        {offres.omra.map(offre => (
+                          <button 
+                            key={offre._id}
+                            className={`voyage-btn ${formulaire.data.offreId === String(offre._id) ? 'selected' : ''}`}
+                            onClick={() => {
+                              setFormulaires(prevFormulaires => 
+                                prevFormulaires.map(form => {
+                                  if (form.id === formulaire.id) {
+                                    return {
+                                      ...form,
+                                      data: {
+                                        ...form.data,
+                                        offreId: String(offre._id),
+                                        typePelerinage: offre.type,
+                                        dateDepart: 'Du 15 Mars au 05 Avril 2025'
+                                      }
+                                    };
+                                  }
+                                  return form;
+                                })
+                              );
+                            }}
+                          >
+                            <span className="voyage-titre">{offre.titre}</span>
+                            <span className="voyage-prix">{offre.prix}€</span>
+                          </button>
+                        ))}
+                      </div>
                     </div>
                   </div>
-                </div>
+                )}
               </div>
             )}
 
